@@ -13,6 +13,7 @@ function GameBoard() {
 	} = useGameStates();
 
 	const handleClick = (i, j) => {
+		// if activeGrid is not null & activeGrid is not same as current square & activeGrid is not full, do nothing
 		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
 			return;
 		gameLogic(
@@ -27,7 +28,7 @@ function GameBoard() {
 			j
 		);
 
-		console.log("i", i, "j", j);
+		console.log("i:", i, "j:", j);
 	};
 
 	const renderSquare = (value, i, j) => (
