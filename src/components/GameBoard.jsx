@@ -1,39 +1,31 @@
 import Square from "./Square";
-import { useState } from "react";
+import { gameLogic, isGridFull } from "../utils/gameLogic";
+import useGameStates from "../hooks/useGameStates";
 
 function GameBoard() {
-	const [xIsNext, setXIsNext] = useState(true);
-	const [activeGrid, setActiveGrid] = useState(null);
-	const [squares, setSquares] = useState(
-		[...Array(9)].map(() => Array(9).fill(null))
-	);
-
-	const isGridFull = (gridIndex) => {
-		return squares[gridIndex].every((value) => value !== null);
-	};
-
-	const gameLogic = (i, j) => {
-		if (squares[i][j]) return;
-
-		const nextSquares = [...squares];
-		nextSquares[i] = [...nextSquares[i]];
-		nextSquares[i][j] = xIsNext ? "X" : "O";
-
-		const nextActiveGrid = j;
-
-		if (isGridFull(nextActiveGrid)) {
-			setActiveGrid(null); // Set all grids as active for one move
-		} else {
-			setActiveGrid(nextActiveGrid);
-		}
-
-		setSquares(nextSquares);
-		setXIsNext(!xIsNext);
-	};
+	const {
+		xIsNext,
+		setXIsNext,
+		activeGrid,
+		setActiveGrid,
+		squares,
+		setSquares,
+	} = useGameStates();
 
 	const handleClick = (i, j) => {
-		if (activeGrid && activeGrid !== i && !isGridFull(activeGrid)) return;
-		gameLogic(i, j);
+		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
+			return;
+		gameLogic(
+			{
+				squares,
+				setSquares,
+				xIsNext,
+				setXIsNext,
+				setActiveGrid,
+			},
+			i,
+			j
+		);
 
 		console.log("i", i, "j", j);
 	};
