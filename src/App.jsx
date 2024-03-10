@@ -1,13 +1,15 @@
 import Footer from "./components/Footer";
-import NameChip from "./components/NameChip";
 import GameBoard from "./components/GameBoard";
 
 function App() {
 	return (
 		<>
-			<GameBoard />
-			{/* <NameChip name="tony" />
-			<Footer /> */}
+			<div className="flex flex-col justify-center h-screen bg-primaryLight">
+				<div className="flex flex-grow items-center justify-center">
+					<GameBoard />
+				</div>
+				<Footer />
+			</div>
 		</>
 	);
 }

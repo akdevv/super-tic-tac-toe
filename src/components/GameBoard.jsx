@@ -40,12 +40,12 @@ function GameBoard() {
 
 	return (
 		<>
-			<h1>Game Board</h1>
-			<div className="inline-grid grid-cols-3 gap-3 m-3">
-				{squares.map((row, i) =>
-					renderGrid(row, i, activeGrid, winnerGrid, handleClick)
-				)}
-				ActiveGrid: {activeGrid}
+			<div className="flex justify-center items-center">
+				<div className="inline-grid grid-cols-3 gap-3">
+					{squares.map((row, i) =>
+						renderGrid(row, i, activeGrid, winnerGrid, handleClick)
+					)}
+				</div>
 			</div>
 		</>
 	);
