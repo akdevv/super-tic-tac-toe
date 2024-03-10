@@ -1,62 +1,63 @@
 // calculate winner for individual tic-tac-toe
-// const calculateGridWinner = (squares) => {
-// 	console.log("squares from calculateGridWinner fn:", squares);
-// 	const lines = [
-// 		// horizontal
-// 		[0, 1, 2],
-// 		[3, 4, 5],
-// 		[6, 7, 8],
-// 		// vertical
-// 		[0, 3, 6],
-// 		[1, 4, 7],
-// 		[2, 5, 8],
-// 		// diagonal
-// 		[0, 4, 8],
-// 		[2, 4, 6],
-// 	];
+const calculateGridWinner = (squares) => {
+	const lines = [
+		// horizontal
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		// vertical
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		// diagonal
+		[0, 4, 8],
+		[2, 4, 6],
+	];
 
-// 	for (let i = 0; i < lines.length; i++) {
-// 		const [a, b, c] = lines[i];
-// 		if (
-// 			squares[a] &&
-// 			squares[a] === squares[b] &&
-// 			squares[a] === squares[c]
-// 		) {
-// 			return squares[a];
-// 		}
-// 	}
-// 	return null;
-// };
+	for (let i = 0; i < lines.length; i++) {
+		const [a, b, c] = lines[i];
+		if (
+			squares[a] &&
+			squares[a] === squares[b] &&
+			squares[a] === squares[c]
+		) {
+			return squares[a];
+		}
+	}
+	return null;
+};
 
 // calculate winner for the entire tic-tac-toe
-// const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
-// 	if (winnerGrid && winnerGrid.every((value) => value !== null)) return;
-// 	for (let i = 0; i < winnerGrid.length; i++) {
-// 		if (winnerGrid[i] !== null) return;
-// 		// if grid is full, set winnerGrid to draw
-// 		if (isGridFull(squares, i)) {
-// 			setWinnerGrid((prev) =>
-// 				prev.map((value, idx) => (idx === i ? "D" : value))
-// 			);
-// 		}
-// 		if (squares[i]) {
-// 			const gridWinner = calculateGridWinner(squares[i]);
-// 			// if X is winner, set winnerGrid to W
-// 			if (gridWinner === "X") {
-// 				setWinnerGrid((prev) =>
-// 					prev.map((value, idx) => (idx === i ? "W" : value))
-// 				);
-// 			}
-// 			// if O is winner, set winnerGrid to L
-// 			else if (gridWinner === "O") {
-// 				setWinnerGrid((prev) =>
-// 					prev.map((value, idx) => (idx === i ? "L" : value))
-// 				);
-// 			}
-// 		}
-// 	}
-// 	console.log("winnerGrid:", winnerGrid);
-// };
+const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
+	if (winnerGrid && winnerGrid.every((value) => value !== null)) return;
+
+	squares.map((square, i) => {
+		if (winnerGrid[i] !== null) return;
+		// if grid is full, set winnerGrid to draw
+		if (isGridFull(squares, i)) {
+			setWinnerGrid((prev) =>
+				prev.map((value, idx) => (idx === i ? "D" : value))
+			);
+		}
+		if (square) {
+			const gridWinner = calculateGridWinner(square);
+			// if X is winner, set winnerGrid to W
+			if (gridWinner === "X") {
+				setWinnerGrid((prev) =>
+					prev.map((value, idx) => (idx === i ? "W" : value))
+				);
+			}
+			// if O is winner, set winnerGrid to L
+			else if (gridWinner === "O") {
+				setWinnerGrid((prev) =>
+					prev.map((value, idx) => (idx === i ? "L" : value))
+				);
+			}
+		}
+	});
+
+	console.log("winnerGrid:", winnerGrid);
+};
 
 // check if the tic-tac-toe is full
 const isGridFull = (squares, gridIndex) => {
@@ -101,4 +102,4 @@ const gameLogic = (
 	setXIsNext(!xIsNext);
 };
 
-export { gameLogic, isGridFull };
+export { gameLogic, isGridFull, calculateWinner };
