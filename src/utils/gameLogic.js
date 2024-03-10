@@ -6,9 +6,13 @@ const isGridFull = (squares, gridIndex) => {
 };
 
 const gameLogic = (
-	{ squares, setSquares, xIsNext, setXIsNext, setActiveGrid },
 	i,
-	j
+	j,
+	squares,
+	setSquares,
+	xIsNext,
+	setXIsNext,
+	setActiveGrid
 ) => {
 	// if square is filled, return
 	if (squares[i][j]) return;
