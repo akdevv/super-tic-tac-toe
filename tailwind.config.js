@@ -10,6 +10,9 @@ export default {
 				primaryDark: "#000000",
 				primaryGray: "#9C9C9C",
 			},
+			fontFamily: {
+				firaMono: ["Fira Mono", "sans"],
+			},
 		},
 	},
 	plugins: [],
