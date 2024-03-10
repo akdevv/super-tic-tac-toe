@@ -22,13 +22,9 @@ function GameBoard() {
 
 	const handleClick = (i, j) => {
 		// if activeGrid is not null & activeGrid is not same as current square & activeGrid is not full, do nothing
-		if (
-			activeGrid !== null &&
-			activeGrid !== i &&
-			!isGridFull(activeGrid) &&
-			winnerGrid[activeGrid] !== null
-		)
+		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
 			return;
+		if (winnerGrid[i] !== null) return;
 		gameLogic(
 			i,
 			j,

@@ -89,7 +89,10 @@ const gameLogic = (
 
 	// set the next active grid
 	const nextActiveGrid = j;
-	if (isGridFull(squares, nextActiveGrid)) {
+	if (
+		winnerGrid[nextActiveGrid] !== null ||
+		isGridFull(squares, nextActiveGrid)
+	) {
 		setActiveGrid(null); // Set all grids as active for one move
 	} else {
 		setActiveGrid(nextActiveGrid);
