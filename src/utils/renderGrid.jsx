@@ -10,7 +10,7 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 	return (
 		<div
 			key={i}
-			className="inline-grid grid-cols-3 gap-1 bg-primaryGray border-8 border-primaryLight"
+			className="inline-grid grid-cols-3 gap-0.5 bg-primaryGray border-4 border-primaryLight"
 		>
 			{row.map((value, j) => renderSquare(value, i, j, handleClick))}
 		</div>
