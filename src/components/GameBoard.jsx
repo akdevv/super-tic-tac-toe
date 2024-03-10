@@ -41,7 +41,7 @@ function GameBoard() {
 	return (
 		<>
 			<div className="flex justify-center items-center">
-				<div className="inline-grid grid-cols-3 gap-2 bg-black">
+				<div className="inline-grid grid-cols-3">
 					{squares.map((row, i) =>
 						renderGrid(row, i, activeGrid, winnerGrid, handleClick)
 					)}
