@@ -1,11 +1,14 @@
 import { useState } from "react";
 
 function useGameStates() {
-	// Player's turn state
+	// player's turn state
 	const [xIsNext, setXIsNext] = useState(true);
 
-	// Active grid state (which states player can play in)
+	// active grid state (which states player can play in)
 	const [activeGrid, setActiveGrid] = useState(null);
+
+	// winner grid state (which grid has been won)
+	const [winnerGrid, setWinnerGrid] = useState(Array(9).fill(null));
 
 	// Game board state
 	const [squares, setSquares] = useState(
@@ -17,6 +20,8 @@ function useGameStates() {
 		setXIsNext,
 		activeGrid,
 		setActiveGrid,
+		winnerGrid,
+		setWinnerGrid,
 		squares,
 		setSquares,
 	};

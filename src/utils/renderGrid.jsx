@@ -6,7 +6,7 @@ const renderSquare = (value, i, j, handleClick) => (
 );
 
 // renders individual tic-tac-toes
-const renderRows = (row, i, activeGrid, handleClick) => (
+const renderGrid = (row, i, activeGrid, handleClick) => (
 	<div
 		key={i}
 		className={
@@ -19,4 +19,4 @@ const renderRows = (row, i, activeGrid, handleClick) => (
 	</div>
 );
 
-export default renderRows;
+export default renderGrid;
