@@ -55,8 +55,6 @@ const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
 			}
 		}
 	});
-
-	console.log("winnerGrid:", winnerGrid);
 };
 
 // check if the tic-tac-toe is full
@@ -90,6 +88,7 @@ const gameLogic = (
 	// set the next active grid
 	const nextActiveGrid = j;
 	if (
+		winnerGrid[i] !== null ||
 		winnerGrid[nextActiveGrid] !== null ||
 		isGridFull(squares, nextActiveGrid)
 	) {

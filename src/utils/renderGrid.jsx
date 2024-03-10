@@ -6,17 +6,19 @@ const renderSquare = (value, i, j, handleClick) => (
 );
 
 // renders individual tic-tac-toes
-const renderGrid = (row, i, activeGrid, handleClick) => (
-	<div
-		key={i}
-		className={
-			activeGrid === i
-				? "inline-grid grid-cols-3 gap-1 border border-blue-400"
-				: "inline-grid grid-cols-3 gap-1"
-		}
-	>
-		{row.map((value, j) => renderSquare(value, i, j, handleClick))}
-	</div>
-);
+const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
+	let style = "inline-grid grid-cols-3 gap-1";
+	if (activeGrid === i) {
+		style += " border border-blue-400";
+	} else if (winnerGrid[i] === "W" || winnerGrid[i] === "L") {
+		style += " border border-green-400";
+	}
+
+	return (
+		<div key={i} className={style}>
+			{row.map((value, j) => renderSquare(value, i, j, handleClick))}
+		</div>
+	);
+};
 
 export default renderGrid;
