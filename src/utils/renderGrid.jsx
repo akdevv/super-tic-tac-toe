@@ -7,10 +7,11 @@ const renderSquare = (value, i, j, handleClick) => (
 
 // renders individual tic-tac-toes
 const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
-	let style = "inline-grid grid-cols-3";
-
 	return (
-		<div key={i} className={style}>
+		<div
+			key={i}
+			className="inline-grid grid-cols-3 gap-1 bg-primaryGray border-8 border-primaryLight"
+		>
 			{row.map((value, j) => renderSquare(value, i, j, handleClick))}
 		</div>
 	);

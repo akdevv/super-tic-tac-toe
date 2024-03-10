@@ -1,7 +1,7 @@
 function Square({ value, onClick }) {
 	return (
 		<div
-			className="h-10 w-10 p-2 text-cente border border-blue-500"
+			className="h-10 w-10 p-2 text-center bg-primaryLight"
 			onClick={onClick}
 		>
 			{value}
