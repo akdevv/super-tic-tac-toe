@@ -6,8 +6,15 @@ const renderSquare = (value, i, j, handleClick) => (
 );
 
 // renders individual tic-tac-toes
-const renderRows = (row, i, handleClick) => (
-	<div key={i} className="inline-grid grid-cols-3 gap-1">
+const renderRows = (row, i, activeGrid, handleClick) => (
+	<div
+		key={i}
+		className={
+			activeGrid === i
+				? "inline-grid grid-cols-3 gap-1 border border-blue-400"
+				: "inline-grid grid-cols-3 gap-1"
+		}
+	>
 		{row.map((value, j) => renderSquare(value, i, j, handleClick))}
 	</div>
 );

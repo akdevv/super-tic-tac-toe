@@ -33,7 +33,9 @@ function GameBoard() {
 		<>
 			<h1>Game Board</h1>
 			<div className="inline-grid grid-cols-3 gap-3 m-3">
-				{squares.map((row, i) => renderRows(row, i, handleClick))}
+				{squares.map((row, i) =>
+					renderRows(row, i, activeGrid, handleClick)
+				)}
 				ActiveGrid: {activeGrid}
 			</div>
 		</>
