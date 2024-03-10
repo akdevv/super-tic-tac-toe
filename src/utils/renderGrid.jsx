@@ -7,12 +7,13 @@ const renderSquare = (value, i, j, handleClick) => (
 
 // renders individual tic-tac-toes
 const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
-	let style = "inline-grid grid-cols-3 gap-1";
-	if (activeGrid === i) {
-		style += " border border-blue-400";
-	} else if (winnerGrid[i] === "W" || winnerGrid[i] === "L") {
-		style += " border border-green-400";
-	}
+	let style = "inline-grid grid-cols-3 gap-1 bg-primaryGray";
+
+	// if (activeGrid === i) {
+	// 	style += " border border-blue-400";
+	// } else if (winnerGrid[i] === "W" || winnerGrid[i] === "L") {
+	// 	style += " border border-green-400";
+	// }
 
 	return (
 		<div key={i} className={style}>
