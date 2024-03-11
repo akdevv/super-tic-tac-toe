@@ -1,9 +1,9 @@
-function NameChip({ name }) {
-	return (
-		<div className="border border-blue-500 rounded-full w-min px-2">
-			{name}
-		</div>
-	);
+function NameChipRed({ name }) {
+	return <div className={"w-min px-3 rounded-full bg-playerRed"}>{name}</div>;
 }
 
-export default NameChip;
+function NameChipBlue({ name }) {
+	return <div className="w-min px-3 rounded-full bg-playerBlue">{name}</div>;
+}
+
+export { NameChipRed, NameChipBlue };
