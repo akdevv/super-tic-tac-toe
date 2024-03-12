@@ -31,9 +31,9 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 						style={{ top: "40%", left: "12%" }}
 					>
 						{winnerGrid[i].label === "W" ? (
-							<NameChipRed name="player1" />
+							<NameChipRed name="Player1" />
 						) : (
-							<NameChipBlue name="player2" />
+							<NameChipBlue name="Player2" />
 						)}
 					</div>
 				</>
