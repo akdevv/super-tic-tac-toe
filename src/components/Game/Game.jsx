@@ -7,7 +7,7 @@ function Game() {
 
 	return (
 		<>
-			<ScoreBar />
+			<ScoreBar scores={gameStates.scores} />
 			<div className="flex flex-grow items-center justify-center">
 				<GameBoard {...gameStates} />
 			</div>
