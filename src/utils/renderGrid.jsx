@@ -26,8 +26,12 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 						style={{ ...lineStyle }}
 					/>
 					<div
-						className="absolute invisible group-hover:visible ease-in-out duration-100"
-						style={{ top: "40%", left: "12%" }}
+						className="absolute bg-center invisible group-hover:visible ease-in-out transition-all duration-100"
+						style={{
+							top: "50%",
+							left: "50%",
+							transform: "translate(-50%, -50%)",
+						}}
 					>
 						{winnerGrid[i].label === "W" ? (
 							<NameChipRed name="Player1" />

@@ -26,7 +26,7 @@ function ScoreBar({ scores }) {
 							idx === scoreCells.length - 1
 								? "rounded-r-full"
 								: "border-r"
-						} ${color} border-primaryDark`}
+						} ${color} border-primaryDark ease-in-out transition-all duration-300`}
 					></div>
 				))}
 			</div>
