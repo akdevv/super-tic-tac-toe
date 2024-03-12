@@ -24,7 +24,6 @@ const getWinnerLine = (winnerGrid, i) => {
 			sequence.includes(6);
 
 		if (isDiagonalLeft) {
-			console.log("isDiagonalLeft, ", sequence);
 			return {
 				left: "50%",
 				top: "50%",
@@ -32,7 +31,6 @@ const getWinnerLine = (winnerGrid, i) => {
 				transform: "translate(-50%, -50%) rotate(-45deg)",
 			};
 		} else if (isDiagonalRight) {
-			console.log("isDiagonalRight, ", sequence);
 			return {
 				left: "50%",
 				top: "50%",
@@ -40,7 +38,6 @@ const getWinnerLine = (winnerGrid, i) => {
 				transform: "translate(-50%, -50%) rotate(45deg)",
 			};
 		} else if (isRow) {
-			console.log("isRow, ", sequence);
 			return {
 				top: `${rowIndex * 33.33 + 16.67}%`,
 				left: "50%",
@@ -48,7 +45,6 @@ const getWinnerLine = (winnerGrid, i) => {
 				transform: "translate(-50%)",
 			};
 		} else if (isColumn) {
-			console.log("isColumn, ", sequence);
 			return {
 				left: `${columnIndex * 33.33 + 16.67}%`,
 				top: "50%",
