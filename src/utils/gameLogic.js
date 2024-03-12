@@ -21,7 +21,7 @@ const calculateGridWinner = (squares) => {
 			squares[a] === squares[b] &&
 			squares[a] === squares[c]
 		) {
-			return squares[a];
+			return { label: squares[a], sequence: [a, b, c] };
 		}
 	}
 	return null;
@@ -36,21 +36,31 @@ const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
 		// if grid is full, set winnerGrid to draw
 		if (isGridFull(squares, i)) {
 			setWinnerGrid((prev) =>
-				prev.map((value, idx) => (idx === i ? "D" : value))
+				prev.map((value, idx) =>
+					idx === i ? { label: "D", sequence: null } : value
+				)
 			);
 		}
 		if (square) {
 			const gridWinner = calculateGridWinner(square);
 			// if X is winner, set winnerGrid to W
-			if (gridWinner === "X") {
+			if (gridWinner && gridWinner.label === "X") {
 				setWinnerGrid((prev) =>
-					prev.map((value, idx) => (idx === i ? "W" : value))
+					prev.map((value, idx) =>
+						idx === i
+							? { label: "W", sequence: gridWinner.sequence }
+							: value
+					)
 				);
 			}
-			// if O is winner, set winnerGrid to L
-			else if (gridWinner === "O") {
+			// // if O is winner, set winnerGrid to L
+			else if (gridWinner && gridWinner.label === "O") {
 				setWinnerGrid((prev) =>
-					prev.map((value, idx) => (idx === i ? "L" : value))
+					prev.map((value, idx) =>
+						idx === i
+							? { label: "L", sequence: gridWinner.sequence }
+							: value
+					)
 				);
 			}
 		}
