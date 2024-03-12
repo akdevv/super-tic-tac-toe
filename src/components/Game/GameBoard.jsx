@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import renderGrid from "../../utils/renderGrid";
-import { calculateWinner, gameLogic, isGridFull } from "../../utils/gameLogic";
+import {
+	calculateWinner,
+	calculateScores,
+	gameLogic,
+	isGridFull,
+} from "../../utils/gameLogic";
 
 function GameBoard(props) {
 	const {
@@ -12,12 +17,15 @@ function GameBoard(props) {
 		setWinnerGrid,
 		squares,
 		setSquares,
+		setScores,
 	} = props;
 
-	// find the game winner
+	// calculate winner and scores
 	useEffect(() => {
 		calculateWinner(squares, winnerGrid, setWinnerGrid);
-	}, [squares, winnerGrid, setWinnerGrid]);
+		const scores = calculateScores(winnerGrid);
+		setScores(scores);
+	}, [squares, winnerGrid]);
 
 	const handleClick = (i, j) => {
 		// if activeGrid is not null & activeGrid is not same as current square & activeGrid is not full, do nothing

@@ -15,6 +15,9 @@ function useGameStates() {
 		[...Array(9)].map(() => Array(9).fill(null))
 	);
 
+	// scores
+	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
+
 	return {
 		xIsNext,
 		setXIsNext,
@@ -24,6 +27,8 @@ function useGameStates() {
 		setWinnerGrid,
 		squares,
 		setSquares,
+		scores,
+		setScores,
 	};
 }
 

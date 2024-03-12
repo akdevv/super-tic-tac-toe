@@ -67,6 +67,23 @@ const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
 	});
 };
 
+function calculateScores(winnerGrid) {
+	let scores = { red: 0, gray: 0, blue: 0 };
+
+	winnerGrid.forEach((score) => {
+		if (score && score.label === "W") {
+			scores.red += 1;
+		} else if (score && score.label === "L") {
+			scores.blue += 1;
+		} else {
+			// Count both 'null' and 'd' as gray
+			scores.gray += 1;
+		}
+	});
+
+	return scores;
+}
+
 // check if the tic-tac-toe is full
 const isGridFull = (squares, gridIndex) => {
 	if (squares[gridIndex]) {
@@ -114,4 +131,4 @@ const gameLogic = (
 	setXIsNext(!xIsNext);
 };
 
-export { gameLogic, isGridFull, calculateWinner };
+export { gameLogic, isGridFull, calculateWinner, calculateScores };
