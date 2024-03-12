@@ -30,7 +30,11 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 						className="absolute invisible group-hover:visible ease-in-out duration-100"
 						style={{ top: "40%", left: "12%" }}
 					>
-						<NameChipRed name="player1" />
+						{winnerGrid[i].label === "X" ? (
+							<NameChipRed name="player1" />
+						) : (
+							<NameChipBlue name="player2" />
+						)}
 					</div>
 				</>
 			)}
