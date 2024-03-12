@@ -1,4 +1,4 @@
-import { NameChipBlue, NameChipRed } from "./NameChip";
+import { NameChipBlue, NameChipRed } from "../NameChip";
 
 function ScoreBar({ scores }) {
 	console.log("scores", scores);

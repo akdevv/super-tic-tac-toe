@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import renderGrid from "../utils/renderGrid";
-import useGameStates from "../hooks/useGameStates";
-import { calculateWinner, gameLogic, isGridFull } from "../utils/gameLogic";
+import renderGrid from "../../utils/renderGrid";
+import { calculateWinner, gameLogic, isGridFull } from "../../utils/gameLogic";
 
-function GameBoard() {
+function GameBoard(props) {
 	const {
 		xIsNext,
 		setXIsNext,
@@ -13,7 +12,7 @@ function GameBoard() {
 		setWinnerGrid,
 		squares,
 		setSquares,
-	} = useGameStates();
+	} = props;
 
 	// find the game winner
 	useEffect(() => {

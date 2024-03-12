@@ -1,4 +1,4 @@
-import Square from "../components/Square";
+import Square from "../components/Game/Square";
 import getWinnerLine from "./getWinnerLine";
 import { NameChipRed, NameChipBlue } from "../components/NameChip";
 

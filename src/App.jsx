@@ -1,8 +1,7 @@
 import { useState } from "react";
 import Footer from "./components/Footer";
+import Game from "./components/Game/Game";
 import InfoBtn from "./components/InfoBtn";
-import ScoreBar from "./components/ScoreBar";
-import GameBoard from "./components/GameBoard";
 import SettingsBtn from "./components/SettingsBtn";
 
 function App() {
@@ -17,10 +16,7 @@ function App() {
 			<div
 				className={`flex flex-col justify-center h-screen p-5 bg-primaryLight`}
 			>
-				<ScoreBar />
-				<div className="flex flex-grow items-center justify-center">
-					<GameBoard />
-				</div>
+				<Game />
 				<div className="flex justify-between">
 					<SettingsBtn />
 					<Footer />
