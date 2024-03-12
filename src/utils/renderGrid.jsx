@@ -12,10 +12,14 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 	// winner line style
 	const lineStyle = getWinnerLine(winnerGrid, i);
 
+	console.log("activeGrid ==> ", activeGrid);
+
 	return (
 		<div
 			key={i}
-			className="relative inline-grid grid-cols-3 gap-0.5 bg-primaryGray border-4 border-primaryLight group"
+			className={`relative inline-grid grid-cols-3 gap-0.5 bg-primaryGray border-4 group ${
+				activeGrid === i ? "border-playerBlue" : "border-primaryLight"
+			}`}
 		>
 			{row.map((value, j) => renderSquare(value, i, j, handleClick))}
 
@@ -33,9 +37,10 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 							transform: "translate(-50%, -50%)",
 						}}
 					>
-						{winnerGrid[i].label === "W" ? (
+						{winnerGrid[i].label === "W" && (
 							<NameChipRed name="Player1" />
-						) : (
+						)}
+						{winnerGrid[i].label === "W" && (
 							<NameChipBlue name="Player2" />
 						)}
 					</div>
