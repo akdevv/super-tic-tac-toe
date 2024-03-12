@@ -1,7 +1,6 @@
 import { NameChipBlue, NameChipRed } from "../NameChip";
 
-function ScoreBar({ scores }) {
-	console.log("scores", scores);
+function ScoreBar() {
 	const scoreCells = Array(9).fill(0);
 
 	return (

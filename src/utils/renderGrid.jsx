@@ -11,7 +11,6 @@ const renderSquare = (value, i, j, handleClick) => (
 const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 	// winner line style
 	const lineStyle = getWinnerLine(winnerGrid, i);
-	console.log(`winnerGrid[${i}] = `, winnerGrid[i]);
 
 	return (
 		<div
