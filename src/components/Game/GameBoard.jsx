@@ -25,7 +25,7 @@ function GameBoard(props) {
 		calculateWinner(squares, winnerGrid, setWinnerGrid);
 		const scores = calculateScores(winnerGrid);
 		setScores(scores);
-	}, [squares, winnerGrid]);
+	}, [squares, winnerGrid, setScores, setWinnerGrid]);
 
 	const handleClick = (i, j) => {
 		// if activeGrid is not null & activeGrid is not same as current square & activeGrid is not full, do nothing
@@ -44,6 +44,15 @@ function GameBoard(props) {
 			setSquares
 		);
 	};
+
+	// REMOVE THESE LATER
+	// console.log("-------------------------------------");
+	// console.log("xIsNext ==> ", xIsNext);
+	// console.log("activeGrid ==> ", activeGrid);
+	// winnerGrid.map((value, idx) =>
+	// 	console.log(`winnerGrid[${idx}] ==>`, value)
+	// );
+	// console.log("-------------------------------------");
 
 	return (
 		<>

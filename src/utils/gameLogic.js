@@ -109,26 +109,49 @@ const gameLogic = (
 	const nextSquares = [...squares];
 	nextSquares[i] = [...nextSquares[i]];
 
-	// set the square to X or O based on xIsNext
 	nextSquares[i][j] = xIsNext ? "X" : "O";
+	const gridWinner = calculateGridWinner(nextSquares[i]);
 
-	// set the next active grid
 	const nextActiveGrid = j;
 	if (
-		winnerGrid[i] !== null ||
+		gridWinner !== null ||
+		isGridFull(squares, i) ||
+		(i === nextActiveGrid && gridWinner !== null) ||
 		winnerGrid[nextActiveGrid] !== null ||
 		isGridFull(squares, nextActiveGrid)
 	) {
-		setActiveGrid(null); // Set all grids as active for one move
+		setActiveGrid(null);
 	} else {
 		setActiveGrid(nextActiveGrid);
 	}
 
-	// update squares
 	setSquares(nextSquares);
-
-	// toggle xIsNext
 	setXIsNext(!xIsNext);
+
+	// REMOVE THIS LATER
+	// console.log("****************************************");
+	// console.log("i ==> ", i, "nextActiveGrid ==> ", nextActiveGrid);
+
+	// console.log("================= if checks ===============");
+
+	// console.log("gridWinner !== null ==> ", gridWinner !== null);
+	// console.log("isGridFull(squares, i) ==> ", isGridFull(squares, i));
+
+	// console.log(
+	// 	"(i === nextActiveGrid && gridWinner !== null) ==> ",
+	// 	i === nextActiveGrid && gridWinner !== null
+	// );
+
+	// console.log(
+	// 	"winnerGrid[nextActiveGrid] !== null ==> ",
+	// 	winnerGrid[nextActiveGrid] !== null
+	// );
+
+	// console.log(
+	// 	"isGridFull(squares, nextActiveGrid) ==> ",
+	// 	isGridFull(squares, nextActiveGrid)
+	// );
+	// console.log("****************************************");
 };
 
 export { gameLogic, isGridFull, calculateWinner, calculateScores };

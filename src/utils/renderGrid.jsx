@@ -12,8 +12,6 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 	// winner line style
 	const lineStyle = getWinnerLine(winnerGrid, i);
 
-	console.log("activeGrid ==> ", activeGrid);
-
 	return (
 		<div
 			key={i}
@@ -40,7 +38,7 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 						{winnerGrid[i].label === "W" && (
 							<NameChipRed name="Player1" />
 						)}
-						{winnerGrid[i].label === "W" && (
+						{winnerGrid[i].label === "L" && (
 							<NameChipBlue name="Player2" />
 						)}
 					</div>
