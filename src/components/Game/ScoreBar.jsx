@@ -2,9 +2,9 @@ import NameChip from "../NameChip";
 
 function ScoreBar({ scores }) {
 	const scoreCells = [
-		...Array(scores.red).fill("bg-playerRed"),
-		...Array(scores.gray).fill("bg-primaryGray"),
-		...Array(scores.blue).fill("bg-playerBlue"),
+		...Array(scores.wins).fill("bg-playerRed"),
+		...Array(scores.draws).fill("bg-primaryGray"),
+		...Array(scores.losses).fill("bg-playerBlue"),
 	];
 
 	return (

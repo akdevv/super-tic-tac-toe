@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { calculateWinner, calculateScores } from "../utils/gameLogic";
+import { calculateWinner, getScores } from "../utils/gameLogic";
 
 function useGameLogic(
 	cells,
@@ -10,7 +10,7 @@ function useGameLogic(
 ) {
 	useEffect(() => {
 		calculateWinner(cells, winnerArr, setwinnerArr);
-		const scores = calculateScores(winnerArr);
+		const scores = getScores(winnerArr);
 		setScores(scores);
 		console.log("winnerArr from useEffect() ==> ", winnerArr);
 		calculateFinalWinner(winnerArr, scores);

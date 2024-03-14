@@ -1,7 +1,7 @@
 /**
  * Generates the style for the winning line in tic-tac-toe grid.
  *
- * @param {Array} gridWinners Array of winner objects.
+ * @param {Array} wonGrids Array of winner objects.
  * @param {number} gridIndex Index of the current grid.
  * @returns {Object} Style object for winning line | null.
  */
