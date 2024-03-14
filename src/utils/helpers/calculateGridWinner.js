@@ -27,4 +27,4 @@ const calculateGridWinner = (squares) => {
 	return null;
 };
 
-export { calculateGridWinner };
+export default calculateGridWinner;
