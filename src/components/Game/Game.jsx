@@ -8,7 +8,7 @@ function Game() {
 	return (
 		<>
 			<ScoreBar scores={gameStates.scores} />
-			<div className="flex flex-grow items-center justify-center">
+			<div className="flex items-center justify-center flex-grow">
 				<GameBoard {...gameStates} />
 			</div>
 		</>

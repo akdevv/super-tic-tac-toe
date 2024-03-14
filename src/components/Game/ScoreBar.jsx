@@ -8,7 +8,7 @@ function ScoreBar({ scores }) {
 	];
 
 	return (
-		<div className="flex flex-col w-full items-center">
+		<div className="flex flex-col items-center w-full">
 			{/* names components */}
 			<div className="flex sm:w-4/5 md:w-3/5 w-full mb-1.5 justify-between">
 				<NameChip name={"Player1"} color={"playerRed"} />
@@ -16,7 +16,7 @@ function ScoreBar({ scores }) {
 			</div>
 
 			{/* score bar component */}
-			<div className="flex sm:w-4/5 md:w-3/5 w-full h-2 rounded-full border border-primaryDark">
+			<div className="flex w-full h-2 border rounded-full sm:w-4/5 md:w-3/5 border-primaryDark">
 				{scoreCells.map((color, idx) => (
 					<div
 						key={idx}

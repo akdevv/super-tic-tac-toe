@@ -1,12 +1,7 @@
-import { useEffect } from "react";
 import renderGrid from "../../utils/renderGrid";
-import {
-	calculateWinner,
-	calculateScores,
-	gameLogic,
-	isGridFull,
-} from "../../utils/gameLogic";
+import { gameLogic, isGridFull } from "../../utils/gameLogic";
 import getGridWinner from "../../utils/helpers/getGridWinner";
+import useGameLogic from "../../hooks/useGameLogic";
 
 function GameBoard(props) {
 	let isGameOver = false;
@@ -48,30 +43,16 @@ function GameBoard(props) {
 				}
 			}
 		}
-
-		// REMOVE THESE LATER
-		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		// console.log("winnerArr ==> ", winnerArr);
-		// console.log("winnerLabels ==> ", winnerLabels);
-		// console.log("isGameOver ==> ", isGameOver);
-		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
 		return { finalWinner, isGameOver };
 	};
 
-	// calculate winner and scores
-	useEffect(() => {
-		calculateWinner(cells, winnerArr, setwinnerArr);
-		const scores = calculateScores(winnerArr);
-		setScores(scores);
-		const { finalWinner, isGameOver } = calculateFinalWinner(
-			winnerArr,
-			scores
-		);
-		if (isGameOver) {
-			alert(`Game Over! ${finalWinner} wins!`);
-		}
-	}, [cells, winnerArr, setScores, setwinnerArr]);
+	useGameLogic(
+		cells,
+		winnerArr,
+		setScores,
+		setwinnerArr,
+		calculateFinalWinner
+	);
 
 	const handleClick = (i, j) => {
 		// if activeGrid is not null & activeGrid is not same as current cells & activeGrid is not full, do nothing
@@ -91,16 +72,9 @@ function GameBoard(props) {
 		);
 	};
 
-	// REMOVE THESE LATER
-	// console.log("-------------------------------------");
-	// // console.log("xIsNext ==> ", xIsNext);
-	// // console.log("activeGrid ==> ", activeGrid);
-	winnerArr.map((value, idx) => console.log(`winnerArr[${idx}] ==>`, value));
-	// console.log("-------------------------------------");
-
 	return (
 		<>
-			<div className="flex justify-center items-center">
+			<div className="flex items-center justify-center">
 				<div className="inline-grid grid-cols-3 sm:gap-1.5 gap-1 bg-primaryDark">
 					{cells.map((row, i) =>
 						renderGrid(row, i, activeGrid, winnerArr, handleClick)
