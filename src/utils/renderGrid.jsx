@@ -1,6 +1,6 @@
 import Square from "../components/Game/Square";
 import getWinnerLine from "./helpers/getWinnerLine";
-import { NameChipRed, NameChipBlue } from "../components/NameChip";
+import NameChip from "../components/NameChip";
 
 // renders a single square
 const renderSquare = (value, i, j, handleClick) => (
@@ -36,10 +36,10 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 						}}
 					>
 						{winnerGrid[i].label === "W" && (
-							<NameChipRed name="Player1" />
+							<NameChip name={"Player1"} color={"playerRed"} />
 						)}
 						{winnerGrid[i].label === "L" && (
-							<NameChipBlue name="Player2" />
+							<NameChip name={"Player2"} color={"playerBlue"} />
 						)}
 					</div>
 				</>

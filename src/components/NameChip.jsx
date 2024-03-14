@@ -1,17 +1,11 @@
-function NameChipRed({ name }) {
+function NameChip({ name, color }) {
 	return (
-		<div className="w-min px-3 rounded-full font-firaMono bg-playerRed">
+		<div
+			className={`w-min px-3 py-1 rounded-full font-firaMono bg-${color}`}
+		>
 			{name}
 		</div>
 	);
 }
 
-function NameChipBlue({ name }) {
-	return (
-		<div className="w-min px-3 rounded-full font-firaMono bg-playerBlue">
-			{name}
-		</div>
-	);
-}
-
-export { NameChipRed, NameChipBlue };
+export default NameChip;

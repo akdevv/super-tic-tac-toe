@@ -1,4 +1,4 @@
-import { NameChipBlue, NameChipRed } from "../NameChip";
+import NameChip from "../NameChip";
 
 function ScoreBar({ scores }) {
 	const scoreCells = [
@@ -11,8 +11,8 @@ function ScoreBar({ scores }) {
 		<div className="flex flex-col w-full items-center">
 			{/* names components */}
 			<div className="flex sm:w-4/5 md:w-3/5 w-full mb-1.5 justify-between">
-				<NameChipRed name={"Player1"} />
-				<NameChipBlue name={"Player2"} />
+				<NameChip name={"Player1"} color={"playerRed"} />
+				<NameChip name={"Player2"} color={"playerBlue"} />
 			</div>
 
 			{/* score bar component */}
