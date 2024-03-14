@@ -1,5 +1,5 @@
 import Square from "../components/Game/Square";
-import getWinnerLine from "./getWinnerLine";
+import getWinnerLine from "./helpers/getWinnerLine";
 import { NameChipRed, NameChipBlue } from "../components/NameChip";
 
 // renders a single square

@@ -43,16 +43,16 @@ function GameBoard(props) {
 			squares,
 			setSquares
 		);
-	};
 
-	// REMOVE THESE LATER
-	// console.log("-------------------------------------");
-	// console.log("xIsNext ==> ", xIsNext);
-	// console.log("activeGrid ==> ", activeGrid);
-	// winnerGrid.map((value, idx) =>
-	// 	console.log(`winnerGrid[${idx}] ==>`, value)
-	// );
-	// console.log("-------------------------------------");
+		// REMOVE THESE LATER
+		console.log("-------------------------------------");
+		// console.log("xIsNext ==> ", xIsNext);
+		// console.log("activeGrid ==> ", activeGrid);
+		winnerGrid.map((value, idx) =>
+			console.log(`winnerGrid[${idx}] ==>`, value)
+		);
+		console.log("-------------------------------------");
+	};
 
 	return (
 		<>
