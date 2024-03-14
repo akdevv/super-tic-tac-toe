@@ -9,6 +9,8 @@ import {
 import calculateGridWinner from "../../utils/helpers/calculateGridWinner";
 
 function GameBoard(props) {
+	let isGameOver = false;
+
 	const {
 		xIsNext,
 		setXIsNext,
@@ -21,38 +23,40 @@ function GameBoard(props) {
 		setScores,
 	} = props;
 
-	let isGameOver = false;
-
 	// find the final winner
-	const finalWinner = (winnerGrid, scores) => {
-		//find if there is any winner lines
-		// make an array of labels from winnerGrid
+	const calculateFinalWinner = (winnerGrid, scores) => {
+		let finalWinner;
+		// find is there is any winning lines
+		// make arr of lables from winnerGrid
 		const winnerLabels = winnerGrid.map((value) => value?.label);
-		const winner = calculateGridWinner(winnerLabels);
-		if (winner) {
-			console.log("winner is ==> ", winner.label);
+		const winnerLine = calculateGridWinner(winnerLabels);
+		if (winnerLine) {
+			finalWinner = winnerLine.label;
 			isGameOver = true;
 		} else {
-			// if the grid is full, then check the score
+			// if the grid is full, then check the scores
 			if (winnerGrid.every((value) => value !== null)) {
 				if (scores.red > scores.blue) {
-					console.log("winner is ==> ", "x");
+					finalWinner = "X";
 					isGameOver = true;
 				} else if (scores.red < scores.blue) {
-					console.log("winner is ==> ", "o");
+					finalWinner = "L";
 					isGameOver = true;
 				} else {
-					console.log("draw!");
+					finalWinner = "D";
 					isGameOver = true;
 				}
 			}
 		}
+
 		// REMOVE THESE LATER
-		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		// console.log("winnerGrid ==> ", winnerGrid);
-		// console.log("winnerLabels ==> ", winnerLabels);
-		// console.log("isGameOver ==> ", isGameOver);
-		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		console.log("winnerGrid ==> ", winnerGrid);
+		console.log("winnerLabels ==> ", winnerLabels);
+		console.log("isGameOver ==> ", isGameOver);
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
+		return { finalWinner, isGameOver };
 	};
 
 	// calculate winner and scores
@@ -60,7 +64,13 @@ function GameBoard(props) {
 		calculateWinner(squares, winnerGrid, setWinnerGrid);
 		const scores = calculateScores(winnerGrid);
 		setScores(scores);
-		finalWinner(winnerGrid, scores);
+		const { finalWinner, isGameOver } = calculateFinalWinner(
+			winnerGrid,
+			scores
+		);
+		if (isGameOver) {
+			alert(`Game Over! ${finalWinner} wins!`);
+		}
 	}, [squares, winnerGrid, setScores, setWinnerGrid]);
 
 	const handleClick = (i, j) => {

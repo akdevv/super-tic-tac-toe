@@ -91,11 +91,6 @@ const isGridFull = (squares, gridIndex) => {
 	}
 };
 
-// is the game over
-const isGameOver = (winnerGrid) => {
-	return winnerGrid.every((value) => value !== null);
-};
-
 const gameLogic = (
 	i,
 	j,
