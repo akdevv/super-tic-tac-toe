@@ -6,6 +6,7 @@ import {
 	gameLogic,
 	isGridFull,
 } from "../../utils/gameLogic";
+import calculateGridWinner from "../../utils/helpers/calculateGridWinner";
 
 function GameBoard(props) {
 	const {
@@ -20,11 +21,46 @@ function GameBoard(props) {
 		setScores,
 	} = props;
 
+	let isGameOver = false;
+
+	// find the final winner
+	const finalWinner = (winnerGrid, scores) => {
+		//find if there is any winner lines
+		// make an array of labels from winnerGrid
+		const winnerLabels = winnerGrid.map((value) => value?.label);
+		const winner = calculateGridWinner(winnerLabels);
+		if (winner) {
+			console.log("winner is ==> ", winner.label);
+			isGameOver = true;
+		} else {
+			// if the grid is full, then check the score
+			if (winnerGrid.every((value) => value !== null)) {
+				if (scores.red > scores.blue) {
+					console.log("winner is ==> ", "x");
+					isGameOver = true;
+				} else if (scores.red < scores.blue) {
+					console.log("winner is ==> ", "o");
+					isGameOver = true;
+				} else {
+					console.log("draw!");
+					isGameOver = true;
+				}
+			}
+		}
+		// REMOVE THESE LATER
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		console.log("winnerGrid ==> ", winnerGrid);
+		console.log("winnerLabels ==> ", winnerLabels);
+		console.log("isGameOver ==> ", isGameOver);
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+	};
+
 	// calculate winner and scores
 	useEffect(() => {
 		calculateWinner(squares, winnerGrid, setWinnerGrid);
 		const scores = calculateScores(winnerGrid);
 		setScores(scores);
+		finalWinner(winnerGrid, scores);
 	}, [squares, winnerGrid, setScores, setWinnerGrid]);
 
 	const handleClick = (i, j) => {
@@ -43,16 +79,16 @@ function GameBoard(props) {
 			squares,
 			setSquares
 		);
-
-		// REMOVE THESE LATER
-		console.log("-------------------------------------");
-		// console.log("xIsNext ==> ", xIsNext);
-		// console.log("activeGrid ==> ", activeGrid);
-		winnerGrid.map((value, idx) =>
-			console.log(`winnerGrid[${idx}] ==>`, value)
-		);
-		console.log("-------------------------------------");
 	};
+
+	// REMOVE THESE LATER
+	// console.log("-------------------------------------");
+	// // console.log("xIsNext ==> ", xIsNext);
+	// // console.log("activeGrid ==> ", activeGrid);
+	// winnerGrid.map((value, idx) =>
+	// 	console.log(`winnerGrid[${idx}] ==>`, value)
+	// );
+	// console.log("-------------------------------------");
 
 	return (
 		<>
