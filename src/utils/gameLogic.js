@@ -1,4 +1,5 @@
 import getScores from "./helpers/getScores";
+import isGridFull from "./helpers/isGridFull";
 import getGridWinner from "./helpers/getGridWinner";
 
 // calculate winner for the entire tic-tac-toe
@@ -40,13 +41,6 @@ const calculateWinner = (cells, winnerArr, setwinnerArr) => {
 			}
 		}
 	});
-};
-
-// check if the tic-tac-toe is full
-const isGridFull = (cells, gridIndex) => {
-	if (cells[gridIndex]) {
-		return cells[gridIndex].every((value) => value !== null);
-	}
 };
 
 const gameLogic = (
