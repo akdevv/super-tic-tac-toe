@@ -50,11 +50,11 @@ function GameBoard(props) {
 		}
 
 		// REMOVE THESE LATER
-		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		console.log("winnerArr ==> ", winnerArr);
-		console.log("winnerLabels ==> ", winnerLabels);
-		console.log("isGameOver ==> ", isGameOver);
-		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// console.log("winnerArr ==> ", winnerArr);
+		// console.log("winnerLabels ==> ", winnerLabels);
+		// console.log("isGameOver ==> ", isGameOver);
+		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
 		return { finalWinner, isGameOver };
 	};
@@ -95,9 +95,9 @@ function GameBoard(props) {
 	// console.log("-------------------------------------");
 	// // console.log("xIsNext ==> ", xIsNext);
 	// // console.log("activeGrid ==> ", activeGrid);
-	// winnerArr.map((value, idx) =>
-	// 	console.log(`winnerArr[${idx}] ==>`, value)
-	// );
+	winnerArr.map((value, idx) =>
+		console.log(`winnerArr[${idx}] ==>`, value)
+	);
 	// console.log("-------------------------------------");
 
 	return (

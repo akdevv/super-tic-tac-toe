@@ -8,9 +8,11 @@ const renderCell = (value, i, j, handleClick) => (
 );
 
 // renders individual tic-tac-toes
-const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
+const renderGrid = (row, i, activeGrid, winnerArr, handleClick) => {
 	// winner line style
-	const lineStyle = getWinnerLine(winnerGrid, i);
+	const lineStyle = getWinnerLine(winnerArr, i);
+	// console.log("lineStyle ==> ", lineStyle);
+	// console.log("winnerArr ==> ", winnerArr);
 
 	return (
 		<div
@@ -21,7 +23,7 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 		>
 			{row.map((value, j) => renderCell(value, i, j, handleClick))}
 
-			{winnerGrid[i] && (
+			{winnerArr[i] && (
 				<>
 					<div
 						className="absolute h-0.5 bg-primaryDark"
@@ -35,10 +37,10 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 							transform: "translate(-50%, -50%)",
 						}}
 					>
-						{winnerGrid[i].label === "W" && (
+						{winnerArr[i].label === "W" && (
 							<NameChip name={"Player1"} color={"playerRed"} />
 						)}
-						{winnerGrid[i].label === "L" && (
+						{winnerArr[i].label === "L" && (
 							<NameChip name={"Player2"} color={"playerBlue"} />
 						)}
 					</div>

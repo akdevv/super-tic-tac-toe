@@ -10,28 +10,29 @@ const calculateWinner = (cells, winnerArr, setwinnerArr) => {
 		if (isGridFull(cells, i)) {
 			setwinnerArr((prev) =>
 				prev.map((value, idx) =>
-					idx === i ? { label: "D", sequence: null } : value
+					idx === i ? { winner: "D", sequence: null } : value
 				)
 			);
 		}
+
 		if (cell) {
 			const gridWinner = getGridWinner(cell);
 			// if X is winner, set winnerArr to W
-			if (gridWinner && gridWinner.label === "X") {
+			if (gridWinner && gridWinner.winner === "X") {
 				setwinnerArr((prev) =>
 					prev.map((value, idx) =>
 						idx === i
-							? { label: "W", sequence: gridWinner.sequence }
+							? { winner: "W", sequence: gridWinner.sequence }
 							: value
 					)
 				);
 			}
 			// // if O is winner, set winnerArr to L
-			else if (gridWinner && gridWinner.label === "O") {
+			else if (gridWinner && gridWinner.winner === "O") {
 				setwinnerArr((prev) =>
 					prev.map((value, idx) =>
 						idx === i
-							? { label: "L", sequence: gridWinner.sequence }
+							? { winner: "L", sequence: gridWinner.sequence }
 							: value
 					)
 				);
@@ -44,9 +45,9 @@ function calculateScores(winnerArr) {
 	let scores = { red: 0, gray: 0, blue: 0 };
 
 	winnerArr.forEach((score) => {
-		if (score && score.label === "W") {
+		if (score && score.winner === "W") {
 			scores.red += 1;
-		} else if (score && score.label === "L") {
+		} else if (score && score.winner === "L") {
 			scores.blue += 1;
 		} else {
 			// Count both 'null' and 'd' as gray

@@ -23,6 +23,8 @@ const getWinnerLine = (winnerArr, i) => {
 			sequence.includes(4) &&
 			sequence.includes(6);
 
+		console.log("hi from getWinnerLine.js");
+
 		if (isDiagonalLeft) {
 			return {
 				left: "50%",
