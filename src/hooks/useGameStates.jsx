@@ -8,7 +8,7 @@ function useGameStates() {
 	const [activeGrid, setActiveGrid] = useState(null);
 
 	// winner grid state (which grid has been won)
-	const [winnerGrid, setWinnerGrid] = useState(Array(9).fill(null));
+	const [winnerArr, setwinnerArr] = useState(Array(9).fill(null));
 
 	// scores
 	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
@@ -23,8 +23,8 @@ function useGameStates() {
 		setXIsNext,
 		activeGrid,
 		setActiveGrid,
-		winnerGrid,
-		setWinnerGrid,
+		winnerArr,
+		setwinnerArr,
 		squares,
 		setSquares,
 		scores,

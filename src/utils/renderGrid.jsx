@@ -1,10 +1,10 @@
-import Square from "../components/Game/Square";
+import Cell from "../components/Game/Cell";
 import getWinnerLine from "./helpers/getWinnerLine";
 import NameChip from "../components/NameChip";
 
-// renders a single square
-const renderSquare = (value, i, j, handleClick) => (
-	<Square key={`${i}${j}`} value={value} onClick={() => handleClick(i, j)} />
+// renders a single cell
+const renderCell = (value, i, j, handleClick) => (
+	<Cell key={`${i}${j}`} value={value} onClick={() => handleClick(i, j)} />
 );
 
 // renders individual tic-tac-toes
@@ -19,7 +19,7 @@ const renderGrid = (row, i, activeGrid, winnerGrid, handleClick) => {
 				activeGrid === i ? "border-playerBlue" : "border-primaryLight"
 			}`}
 		>
-			{row.map((value, j) => renderSquare(value, i, j, handleClick))}
+			{row.map((value, j) => renderCell(value, i, j, handleClick))}
 
 			{winnerGrid[i] && (
 				<>

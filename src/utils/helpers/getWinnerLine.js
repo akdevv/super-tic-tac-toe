@@ -1,6 +1,6 @@
-const getWinnerLine = (winnerGrid, i) => {
-	if (winnerGrid[i] && winnerGrid[i].sequence) {
-		const { sequence } = winnerGrid[i];
+const getWinnerLine = (winnerArr, i) => {
+	if (winnerArr[i] && winnerArr[i].sequence) {
+		const { sequence } = winnerArr[i];
 
 		// check if winner line is row or column
 		const isRow = sequence.every(

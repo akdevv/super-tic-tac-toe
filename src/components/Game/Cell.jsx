@@ -1,4 +1,4 @@
-function Square({ value, onClick }) {
+function Cell({ value, onClick }) {
 	return (
 		<div
 			className="sm:h-10 h-8 sm:w-10 w-8 p-2 text-center bg-primaryLight"
@@ -9,4 +9,4 @@ function Square({ value, onClick }) {
 	);
 }
 
-export default Square;
+export default Cell;
