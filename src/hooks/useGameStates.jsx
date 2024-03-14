@@ -14,7 +14,7 @@ function useGameStates() {
 	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
 
 	// Game board state
-	const [squares, setSquares] = useState(
+	const [cells, setCells] = useState(
 		[...Array(9)].map(() => Array(9).fill(null))
 	);
 
@@ -25,8 +25,8 @@ function useGameStates() {
 		setActiveGrid,
 		winnerArr,
 		setwinnerArr,
-		squares,
-		setSquares,
+		cells,
+		setCells,
 		scores,
 		setScores,
 	};

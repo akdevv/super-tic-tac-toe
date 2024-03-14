@@ -1,21 +1,21 @@
 import getGridWinner from "./helpers/getGridWinner";
 
 // calculate winner for the entire tic-tac-toe
-const calculateWinner = (squares, winnerArr, setwinnerArr) => {
+const calculateWinner = (cells, winnerArr, setwinnerArr) => {
 	if (winnerArr && winnerArr.every((value) => value !== null)) return;
 
-	squares.map((square, i) => {
+	cells.map((cell, i) => {
 		if (winnerArr[i] !== null) return;
 		// if grid is full, set winnerArr to draw
-		if (isGridFull(squares, i)) {
+		if (isGridFull(cells, i)) {
 			setwinnerArr((prev) =>
 				prev.map((value, idx) =>
 					idx === i ? { label: "D", sequence: null } : value
 				)
 			);
 		}
-		if (square) {
-			const gridWinner = getGridWinner(square);
+		if (cell) {
+			const gridWinner = getGridWinner(cell);
 			// if X is winner, set winnerArr to W
 			if (gridWinner && gridWinner.label === "X") {
 				setwinnerArr((prev) =>
@@ -58,9 +58,9 @@ function calculateScores(winnerArr) {
 }
 
 // check if the tic-tac-toe is full
-const isGridFull = (squares, gridIndex) => {
-	if (squares[gridIndex]) {
-		return squares[gridIndex].every((value) => value !== null);
+const isGridFull = (cells, gridIndex) => {
+	if (cells[gridIndex]) {
+		return cells[gridIndex].every((value) => value !== null);
 	}
 };
 
@@ -72,33 +72,33 @@ const gameLogic = (
 	setActiveGrid,
 	winnerArr,
 	setwinnerArr,
-	squares,
-	setSquares
+	cells,
+	setCells
 ) => {
-	// if square is occupied, return
-	if (squares[i][j]) return;
+	// if cell is occupied, return
+	if (cells[i][j]) return;
 
-	// create copy of squares
-	const nextSquares = [...squares];
-	nextSquares[i] = [...nextSquares[i]];
+	// create copy of cells
+	const nextCells = [...cells];
+	nextCells[i] = [...nextCells[i]];
 
-	nextSquares[i][j] = xIsNext ? "X" : "O";
-	const gridWinner = getGridWinner(nextSquares[i]);
+	nextCells[i][j] = xIsNext ? "X" : "O";
+	const gridWinner = getGridWinner(nextCells[i]);
 
 	const nextActiveGrid = j;
 	if (
 		// gridWinner !== null ||
-		isGridFull(squares, i) ||
+		isGridFull(cells, i) ||
 		(i === nextActiveGrid && gridWinner !== null) ||
 		winnerArr[nextActiveGrid] !== null ||
-		isGridFull(squares, nextActiveGrid)
+		isGridFull(cells, nextActiveGrid)
 	) {
 		setActiveGrid(null);
 	} else {
 		setActiveGrid(nextActiveGrid);
 	}
 
-	setSquares(nextSquares);
+	setCells(nextCells);
 	setXIsNext(!xIsNext);
 
 	// REMOVE THIS LATER
@@ -109,7 +109,7 @@ const gameLogic = (
 	// console.log("================= if checks ===============");
 
 	// console.log("gridWinner !== null ==> ", gridWinner !== null);
-	// console.log("isGridFull(squares, i) ==> ", isGridFull(squares, i));
+	// console.log("isGridFull(cells, i) ==> ", isGridFull(cells, i));
 
 	// console.log(
 	// 	"(i === nextActiveGrid && gridWinner !== null) ==> ",
@@ -122,8 +122,8 @@ const gameLogic = (
 	// );
 
 	// console.log(
-	// 	"isGridFull(squares, nextActiveGrid) ==> ",
-	// 	isGridFull(squares, nextActiveGrid)
+	// 	"isGridFull(cells, nextActiveGrid) ==> ",
+	// 	isGridFull(cells, nextActiveGrid)
 	// );
 	// console.log("****************************************");
 };

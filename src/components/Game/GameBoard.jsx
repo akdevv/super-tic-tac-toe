@@ -18,8 +18,8 @@ function GameBoard(props) {
 		setActiveGrid,
 		winnerArr,
 		setwinnerArr,
-		squares,
-		setSquares,
+		cells,
+		setCells,
 		setScores,
 	} = props;
 
@@ -61,7 +61,7 @@ function GameBoard(props) {
 
 	// calculate winner and scores
 	useEffect(() => {
-		calculateWinner(squares, winnerArr, setwinnerArr);
+		calculateWinner(cells, winnerArr, setwinnerArr);
 		const scores = calculateScores(winnerArr);
 		setScores(scores);
 		const { finalWinner, isGameOver } = calculateFinalWinner(
@@ -71,10 +71,10 @@ function GameBoard(props) {
 		if (isGameOver) {
 			alert(`Game Over! ${finalWinner} wins!`);
 		}
-	}, [squares, winnerArr, setScores, setwinnerArr]);
+	}, [cells, winnerArr, setScores, setwinnerArr]);
 
 	const handleClick = (i, j) => {
-		// if activeGrid is not null & activeGrid is not same as current square & activeGrid is not full, do nothing
+		// if activeGrid is not null & activeGrid is not same as current cells & activeGrid is not full, do nothing
 		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
 			return;
 		if (winnerArr[i] !== null) return;
@@ -86,8 +86,8 @@ function GameBoard(props) {
 			setActiveGrid,
 			winnerArr,
 			setwinnerArr,
-			squares,
-			setSquares
+			cells,
+			setCells
 		);
 	};
 
@@ -104,7 +104,7 @@ function GameBoard(props) {
 		<>
 			<div className="flex justify-center items-center">
 				<div className="inline-grid grid-cols-3 sm:gap-1.5 gap-1 bg-primaryDark">
-					{squares.map((row, i) =>
+					{cells.map((row, i) =>
 						renderGrid(row, i, activeGrid, winnerArr, handleClick)
 					)}
 				</div>
