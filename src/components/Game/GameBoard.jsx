@@ -29,11 +29,6 @@ function GameBoard(props) {
 		const winnerLabels = winnerArr.map((value) => value?.winner);
 		const winnerLine = getGridWinner(winnerLabels);
 
-		console.log("-----------------------------------------");
-		console.log("winnerLine ==> ", winnerLine);
-		console.log("winnerLabels ==> ", winnerLabels);
-		console.log("scores ==> ", scores);
-
 		if (winnerLine) {
 			// finalWinner = winnerLine.label;
 			setIsGameOver(!isGameOver);
@@ -52,8 +47,6 @@ function GameBoard(props) {
 				}
 			}
 		}
-		console.log("isGameOver ==> ", isGameOver);
-		console.log("-----------------------------------------");
 	};
 
 	useGameLogic(

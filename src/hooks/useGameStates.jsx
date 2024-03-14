@@ -1,22 +1,17 @@
 import { useState } from "react";
 
+/**
+ * Custom hook to manage the game states.
+ *
+ * @returns {Object} An object containing the game states
+ */
+
 function useGameStates() {
-	// player's turn state
 	const [xIsNext, setXIsNext] = useState(true);
-
-	// active grid state (which states player can play in)
 	const [activeGrid, setActiveGrid] = useState(null);
-
-	// winner grid state (which grid has been won)
-	const [winnerArr, setwinnerArr] = useState(Array(9).fill(null));
-
-	// scores
-	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
-
-	// isGameOver
+	const [wonGrids, setWonGrids] = useState(Array(9).fill(null));
+	const [scores, setScores] = useState({ wins: 0, draws: 0, losses: 0 });
 	const [isGameOver, setIsGameOver] = useState(false);
-
-	// Game board state
 	const [cells, setCells] = useState(
 		[...Array(9)].map(() => Array(9).fill(null))
 	);
@@ -26,14 +21,14 @@ function useGameStates() {
 		setXIsNext,
 		activeGrid,
 		setActiveGrid,
-		winnerArr,
-		setwinnerArr,
-		cells,
-		setCells,
+		wonGrids,
+		setWonGrids,
 		scores,
 		setScores,
 		isGameOver,
 		setIsGameOver,
+		cells,
+		setCells,
 	};
 }
 

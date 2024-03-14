@@ -1,8 +1,8 @@
 /**
  * Finds and updates the wonGrids state with winner & sequence of each grid.
  *
- * @param {Array} cells - 2D array containing the tic-tac-toe grid.
- * @param {Array} wonGrids - Array tracking result & sequence of each grid.
+ * @param {Array} cells 2D array containing the tic-tac-toe grid.
+ * @param {Array} wonGrids Array tracking result & sequence of each grid.
  * @param {Function} setWonGrids Function to update wonGrids.
  */
 

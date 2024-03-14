@@ -39,32 +39,6 @@ const gameLogic = (
 
 	setCells(nextCells);
 	setXIsNext(!xIsNext);
-
-	// REMOVE THIS LATER
-	// console.log("****************************************");
-	// console.log("i ==> ", i, "nextActiveGrid ==> ", nextActiveGrid);
-	// console.log("gridWinner ==> ", gridWinner);
-
-	// console.log("================= if checks ===============");
-
-	// console.log("gridWinner !== null ==> ", gridWinner !== null);
-	// console.log("isGridFull(cells, i) ==> ", isGridFull(cells, i));
-
-	// console.log(
-	// 	"(i === nextActiveGrid && gridWinner !== null) ==> ",
-	// 	i === nextActiveGrid && gridWinner !== null
-	// );
-
-	// console.log(
-	// 	"winnerArr[nextActiveGrid] !== null ==> ",
-	// 	winnerArr[nextActiveGrid] !== null
-	// );
-
-	// console.log(
-	// 	"isGridFull(cells, nextActiveGrid) ==> ",
-	// 	isGridFull(cells, nextActiveGrid)
-	// );
-	// console.log("****************************************");
 };
 
 export { gameLogic, isGridFull, updateWonGrid, getScores };
