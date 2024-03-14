@@ -95,9 +95,7 @@ function GameBoard(props) {
 	// console.log("-------------------------------------");
 	// // console.log("xIsNext ==> ", xIsNext);
 	// // console.log("activeGrid ==> ", activeGrid);
-	winnerArr.map((value, idx) =>
-		console.log(`winnerArr[${idx}] ==>`, value)
-	);
+	winnerArr.map((value, idx) => console.log(`winnerArr[${idx}] ==>`, value));
 	// console.log("-------------------------------------");
 
 	return (

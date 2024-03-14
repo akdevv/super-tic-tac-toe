@@ -1,6 +1,6 @@
 function SettingsBtn() {
 	return (
-		<div className="flex w-10 h-10 justify-center p-2 rounded-full bg-primaryGray cursor-pointer">
+		<div className="flex justify-center w-10 h-10 p-2 rounded-full cursor-pointer bg-primaryGray">
 			<img
 				className="w-5"
 				src="/settings-btn.svg"

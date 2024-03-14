@@ -3,7 +3,7 @@ function InfoBtn({ text, showInfo, onClick }) {
 		<div>
 			<div
 				onClick={onClick}
-				className="flex w-10 h-10 justify-center p-2 rounded-full bg-primaryGray cursor-pointer font-firaMono font-bold"
+				className="flex justify-center w-10 h-10 p-2 font-bold rounded-full cursor-pointer bg-primaryGray font-firaMono"
 			>
 				{text}
 			</div>
