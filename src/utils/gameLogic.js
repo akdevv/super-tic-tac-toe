@@ -1,47 +1,7 @@
 import getScores from "./helpers/getScores";
 import isGridFull from "./helpers/isGridFull";
+import updateWonGrid from "./helpers/getWinner";
 import getGridWinner from "./helpers/getGridWinner";
-
-// calculate winner for the entire tic-tac-toe
-const calculateWinner = (cells, winnerArr, setwinnerArr) => {
-	if (winnerArr && winnerArr.every((value) => value !== null)) return;
-
-	cells.map((cell, i) => {
-		if (winnerArr[i] !== null) return;
-		// if grid is full, set winnerArr to draw
-		if (isGridFull(cells, i)) {
-			setwinnerArr((prev) =>
-				prev.map((value, idx) =>
-					idx === i ? { winner: "D", sequence: null } : value
-				)
-			);
-		}
-
-		if (cell) {
-			const gridWinner = getGridWinner(cell);
-			// if X is winner, set winnerArr to W
-			if (gridWinner && gridWinner.winner === "X") {
-				setwinnerArr((prev) =>
-					prev.map((value, idx) =>
-						idx === i
-							? { winner: "W", sequence: gridWinner.sequence }
-							: value
-					)
-				);
-			}
-			// // if O is winner, set winnerArr to L
-			else if (gridWinner && gridWinner.winner === "O") {
-				setwinnerArr((prev) =>
-					prev.map((value, idx) =>
-						idx === i
-							? { winner: "L", sequence: gridWinner.sequence }
-							: value
-					)
-				);
-			}
-		}
-	});
-};
 
 const gameLogic = (
 	i,
@@ -107,4 +67,4 @@ const gameLogic = (
 	// console.log("****************************************");
 };
 
-export { gameLogic, isGridFull, calculateWinner, getScores };
+export { gameLogic, isGridFull, updateWonGrid, getScores };

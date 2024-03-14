@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { calculateWinner, getScores } from "../utils/gameLogic";
+import { updateWonGrid, getScores } from "../utils/gameLogic";
 
 function useGameLogic(
 	cells,
@@ -9,10 +9,9 @@ function useGameLogic(
 	calculateFinalWinner
 ) {
 	useEffect(() => {
-		calculateWinner(cells, winnerArr, setwinnerArr);
+		updateWonGrid(cells, winnerArr, setwinnerArr);
 		const scores = getScores(winnerArr);
 		setScores(scores);
-		console.log("winnerArr from useEffect() ==> ", winnerArr);
 		calculateFinalWinner(winnerArr, scores);
 	}, [cells, winnerArr]);
 }

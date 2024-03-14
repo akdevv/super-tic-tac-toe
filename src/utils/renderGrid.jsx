@@ -37,10 +37,10 @@ const renderGrid = (row, i, activeGrid, winnerArr, handleClick) => {
 							transform: "translate(-50%, -50%)",
 						}}
 					>
-						{winnerArr[i].winner === "W" && (
+						{winnerArr[i].result === "W" && (
 							<NameChip name={"Player1"} color={"playerRed"} />
 						)}
-						{winnerArr[i].winner === "L" && (
+						{winnerArr[i].result === "L" && (
 							<NameChip name={"Player2"} color={"playerBlue"} />
 						)}
 					</div>
