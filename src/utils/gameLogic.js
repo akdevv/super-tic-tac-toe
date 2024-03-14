@@ -1,6 +1,6 @@
 import getScores from "./helpers/getScores";
 import isGridFull from "./helpers/isGridFull";
-import updateWonGrid from "./helpers/getWinner";
+import updateWonGrid from "./helpers/updateWonGrid";
 import getGridWinner from "./helpers/getGridWinner";
 
 const gameLogic = (
