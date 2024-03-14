@@ -1,5 +1,5 @@
 import Cell from "../components/Game/Cell";
-import getWinnerLine from "./helpers/getWinnerLine";
+import getWinningLineStyles from "./helpers/getWinningLineStyles";
 import NameChip from "../components/NameChip";
 
 // renders a single cell
@@ -10,7 +10,7 @@ const renderCell = (value, i, j, handleClick) => (
 // renders individual tic-tac-toes
 const renderGrid = (row, i, activeGrid, winnerArr, handleClick) => {
 	// winner line style
-	const lineStyle = getWinnerLine(winnerArr, i);
+	const lineStyle = getWinningLineStyles(winnerArr, i);
 	// console.log("lineStyle ==> ", lineStyle);
 	// console.log("winnerArr ==> ", winnerArr);
 
@@ -30,7 +30,7 @@ const renderGrid = (row, i, activeGrid, winnerArr, handleClick) => {
 						style={{ ...lineStyle }}
 					/>
 					<div
-						className="absolute bg-center invisible group-hover:visible ease-in-out transition-all duration-100"
+						className="absolute invisible transition-all duration-100 ease-in-out bg-center group-hover:visible"
 						style={{
 							top: "50%",
 							left: "50%",

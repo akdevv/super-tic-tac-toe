@@ -19,6 +19,8 @@ function GameBoard(props) {
 		setIsGameOver,
 	} = props;
 
+	console.log("scores ==> ", scores);
+
 	// find the final winner
 	const calculateFinalWinner = (winnerArr, scores) => {
 		// let finalWinner;
@@ -30,6 +32,7 @@ function GameBoard(props) {
 		console.log("-----------------------------------------");
 		console.log("winnerLine ==> ", winnerLine);
 		console.log("winnerLabels ==> ", winnerLabels);
+		console.log("scores ==> ", scores);
 
 		if (winnerLine) {
 			// finalWinner = winnerLine.label;
