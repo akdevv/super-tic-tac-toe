@@ -1,7 +1,7 @@
 /**
  * Checks if tic-tac-toe grid is full.
  *
- * @param {Array} cells Array of tic-tac-toe grids.
+ * @param {Array<string | null>} cells Array of tic-tac-toe grids.
  * @param {number} gridIndex Index of the grid to check.
  * @returns {boolean} returns true if full | false if not
  */

@@ -1,8 +1,11 @@
 /**
  * Calculates the scores based on the winner of each tic-tac-toe grid.
  *
- * @param {Array} wonGrids Array containing the winner of each grid.
- * @returns {Object} Returns an object with wins, draws, and losses.
+ * @param {{
+ * 		result: string,
+ * 		sequence: number[]
+ * 	}} wonGrids Array tracking result & sequence of each grid.
+ * @returns {{ wins: 0, draws: 0, losses: 0 }} Returns an object with wins, draws, and losses.
  */
 
 function getScores(wonGrids) {

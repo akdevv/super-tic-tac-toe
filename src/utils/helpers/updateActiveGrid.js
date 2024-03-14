@@ -7,7 +7,10 @@ import getGridWinner from "./getGridWinner";
  * @param {number} i The row index of the current move.
  * @param {number} j The column index of the current move.
  * @param {Array<Array<string | null>>} cells The current state of the game board.
- * @param {Array} wonGrids Array tracking the winners of each grid.
+ * @param {{
+ * 		result: string,
+ * 		sequence: number[]
+ * 	}} wonGrids Array tracking result & sequence of each grid.
  * @param {Function} setActiveGrid Function to set the next active grid.
  */
 

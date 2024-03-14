@@ -1,13 +1,16 @@
+import isGridFull from "./isGridFull";
+import getGridWinner from "./getGridWinner";
+
 /**
  * Finds and updates the wonGrids state with winner & sequence of each grid.
  *
- * @param {Array} cells 2D array containing the tic-tac-toe grid.
- * @param {Array} wonGrids Array tracking result & sequence of each grid.
+ * @param {Array<Array<string | null>>} cells 2D array containing the tic-tac-toe grid.
+ * @param {{
+ * 		result: string,
+ * 		sequence: number[]
+ * 	}} wonGrids Array tracking result & sequence of each grid.
  * @param {Function} setWonGrids Function to update wonGrids.
  */
-
-import isGridFull from "./isGridFull";
-import getGridWinner from "./getGridWinner";
 
 const updateWonGrid = (cells, wonGrids, setWonGrids) => {
 	// if all grids are not null, return
