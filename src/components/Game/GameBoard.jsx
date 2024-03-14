@@ -9,8 +9,8 @@ function GameBoard(props) {
 		setXIsNext,
 		activeGrid,
 		setActiveGrid,
-		winnerArr,
-		setwinnerArr,
+		wonGrids,
+		setWonGrids,
 		cells,
 		setCells,
 		scores,
@@ -22,11 +22,11 @@ function GameBoard(props) {
 	console.log("scores ==> ", scores);
 
 	// find the final winner
-	const calculateFinalWinner = (winnerArr, scores) => {
+	const calculateFinalWinner = (wonGrids, scores) => {
 		// let finalWinner;
 		// find is there is any winning lines
 		// make arr of lables from winnerArr
-		const winnerLabels = winnerArr.map((value) => value?.winner);
+		const winnerLabels = wonGrids.map((value) => value?.winner);
 		const winnerLine = getGridWinner(winnerLabels);
 
 		if (winnerLine) {
@@ -34,7 +34,7 @@ function GameBoard(props) {
 			setIsGameOver(!isGameOver);
 		} else {
 			// if the grid is full, then check the scores
-			if (winnerArr.every((value) => value !== null)) {
+			if (wonGrids.every((value) => value !== null)) {
 				if (scores.red > scores.blue) {
 					// finalWinner = "X";
 					setIsGameOver(!isGameOver);
@@ -49,27 +49,21 @@ function GameBoard(props) {
 		}
 	};
 
-	useGameLogic(
-		cells,
-		winnerArr,
-		setScores,
-		setwinnerArr,
-		calculateFinalWinner
-	);
+	useGameLogic(cells, wonGrids, setScores, setWonGrids, calculateFinalWinner);
 
 	const handleClick = (i, j) => {
 		// if activeGrid is not null & activeGrid is not same as current cells & activeGrid is not full, do nothing
 		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
 			return;
-		if (winnerArr[i] !== null) return;
+		if (wonGrids[i] !== null) return;
 		gameLogic(
 			i,
 			j,
 			xIsNext,
 			setXIsNext,
 			setActiveGrid,
-			winnerArr,
-			setwinnerArr,
+			wonGrids,
+			setWonGrids,
 			cells,
 			setCells
 		);
@@ -80,7 +74,7 @@ function GameBoard(props) {
 			<div className="flex items-center justify-center">
 				<div className="inline-grid grid-cols-3 sm:gap-1.5 gap-1 bg-primaryDark">
 					{cells.map((row, i) =>
-						renderGrid(row, i, activeGrid, winnerArr, handleClick)
+						renderGrid(row, i, activeGrid, wonGrids, handleClick)
 					)}
 				</div>
 			</div>

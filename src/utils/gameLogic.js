@@ -1,7 +1,7 @@
 import getScores from "./helpers/getScores";
 import isGridFull from "./helpers/isGridFull";
 import updateWonGrid from "./helpers/updateWonGrid";
-import getGridWinner from "./helpers/getGridWinner";
+import updateActiveGrid from "./helpers/updateActiveGrid";
 
 const gameLogic = (
 	i,
@@ -9,8 +9,7 @@ const gameLogic = (
 	xIsNext,
 	setXIsNext,
 	setActiveGrid,
-	winnerArr,
-	setwinnerArr,
+	wonGrids,
 	cells,
 	setCells
 ) => {
@@ -22,21 +21,8 @@ const gameLogic = (
 	nextCells[i] = [...nextCells[i]];
 
 	nextCells[i][j] = xIsNext ? "X" : "O";
-	const gridWinner = getGridWinner(nextCells[i]);
 
-	const nextActiveGrid = j;
-	if (
-		// gridWinner !== null ||
-		isGridFull(cells, i) ||
-		(i === nextActiveGrid && gridWinner !== null) ||
-		winnerArr[nextActiveGrid] !== null ||
-		isGridFull(cells, nextActiveGrid)
-	) {
-		setActiveGrid(null);
-	} else {
-		setActiveGrid(nextActiveGrid);
-	}
-
+	updateActiveGrid(i, j, nextCells, wonGrids, setActiveGrid);
 	setCells(nextCells);
 	setXIsNext(!xIsNext);
 };
