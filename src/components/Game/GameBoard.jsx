@@ -48,11 +48,11 @@ function GameBoard(props) {
 			}
 		}
 		// REMOVE THESE LATER
-		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		console.log("winnerGrid ==> ", winnerGrid);
-		console.log("winnerLabels ==> ", winnerLabels);
-		console.log("isGameOver ==> ", isGameOver);
-		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		// console.log("winnerGrid ==> ", winnerGrid);
+		// console.log("winnerLabels ==> ", winnerLabels);
+		// console.log("isGameOver ==> ", isGameOver);
+		// console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 	};
 
 	// calculate winner and scores

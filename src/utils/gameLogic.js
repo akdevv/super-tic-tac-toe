@@ -1,4 +1,31 @@
-import calculateGridWinner from "./helpers/calculateGridWinner";
+// calculate winner for individual tic-tac-toe
+const calculateGridWinner = (squares) => {
+	const lines = [
+		// horizontal
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		// vertical
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		// diagonal
+		[0, 4, 8],
+		[2, 4, 6],
+	];
+
+	for (let i = 0; i < lines.length; i++) {
+		const [a, b, c] = lines[i];
+		if (
+			squares[a] &&
+			squares[a] === squares[b] &&
+			squares[a] === squares[c]
+		) {
+			return { label: squares[a], sequence: [a, b, c] };
+		}
+	}
+	return null;
+};
 
 // calculate winner for the entire tic-tac-toe
 const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
@@ -64,6 +91,11 @@ const isGridFull = (squares, gridIndex) => {
 	}
 };
 
+// is the game over
+const isGameOver = (winnerGrid) => {
+	return winnerGrid.every((value) => value !== null);
+};
+
 const gameLogic = (
 	i,
 	j,
@@ -87,7 +119,7 @@ const gameLogic = (
 
 	const nextActiveGrid = j;
 	if (
-		gridWinner !== null ||
+		// gridWinner !== null ||
 		isGridFull(squares, i) ||
 		(i === nextActiveGrid && gridWinner !== null) ||
 		winnerGrid[nextActiveGrid] !== null ||
@@ -103,7 +135,28 @@ const gameLogic = (
 
 	// REMOVE THIS LATER
 	// console.log("****************************************");
-	// console.log("winnerGrid ==>", winnerGrid);
+	// console.log("i ==> ", i, "nextActiveGrid ==> ", nextActiveGrid);
+	// console.log("gridWinner ==> ", gridWinner);
+
+	// console.log("================= if checks ===============");
+
+	// console.log("gridWinner !== null ==> ", gridWinner !== null);
+	// console.log("isGridFull(squares, i) ==> ", isGridFull(squares, i));
+
+	// console.log(
+	// 	"(i === nextActiveGrid && gridWinner !== null) ==> ",
+	// 	i === nextActiveGrid && gridWinner !== null
+	// );
+
+	// console.log(
+	// 	"winnerGrid[nextActiveGrid] !== null ==> ",
+	// 	winnerGrid[nextActiveGrid] !== null
+	// );
+
+	// console.log(
+	// 	"isGridFull(squares, nextActiveGrid) ==> ",
+	// 	isGridFull(squares, nextActiveGrid)
+	// );
 	// console.log("****************************************");
 };
 
