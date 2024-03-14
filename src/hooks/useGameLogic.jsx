@@ -12,14 +12,9 @@ function useGameLogic(
 		calculateWinner(cells, winnerArr, setwinnerArr);
 		const scores = calculateScores(winnerArr);
 		setScores(scores);
-		const { finalWinner, isGameOver } = calculateFinalWinner(
-			winnerArr,
-			scores
-		);
-		if (isGameOver) {
-			alert(`Game Over! ${finalWinner} wins!`);
-		}
-	}, [cells]);
+		console.log("winnerArr from useEffect() ==> ", winnerArr);
+		calculateFinalWinner(winnerArr, scores);
+	}, [cells, winnerArr]);
 }
 
 export default useGameLogic;

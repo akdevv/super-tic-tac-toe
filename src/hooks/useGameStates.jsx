@@ -13,6 +13,9 @@ function useGameStates() {
 	// scores
 	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
 
+	// isGameOver
+	const [isGameOver, setIsGameOver] = useState(false);
+
 	// Game board state
 	const [cells, setCells] = useState(
 		[...Array(9)].map(() => Array(9).fill(null))
@@ -29,6 +32,8 @@ function useGameStates() {
 		setCells,
 		scores,
 		setScores,
+		isGameOver,
+		setIsGameOver,
 	};
 }
 

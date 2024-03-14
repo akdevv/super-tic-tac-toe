@@ -4,8 +4,6 @@ import getGridWinner from "../../utils/helpers/getGridWinner";
 import useGameLogic from "../../hooks/useGameLogic";
 
 function GameBoard(props) {
-	let isGameOver = false;
-
 	const {
 		xIsNext,
 		setXIsNext,
@@ -15,35 +13,44 @@ function GameBoard(props) {
 		setwinnerArr,
 		cells,
 		setCells,
+		scores,
 		setScores,
+		isGameOver,
+		setIsGameOver,
 	} = props;
 
 	// find the final winner
 	const calculateFinalWinner = (winnerArr, scores) => {
-		let finalWinner;
+		// let finalWinner;
 		// find is there is any winning lines
 		// make arr of lables from winnerArr
-		const winnerLabels = winnerArr.map((value) => value?.label);
+		const winnerLabels = winnerArr.map((value) => value?.winner);
 		const winnerLine = getGridWinner(winnerLabels);
+
+		console.log("-----------------------------------------");
+		console.log("winnerLine ==> ", winnerLine);
+		console.log("winnerLabels ==> ", winnerLabels);
+
 		if (winnerLine) {
-			finalWinner = winnerLine.label;
-			isGameOver = true;
+			// finalWinner = winnerLine.label;
+			setIsGameOver(!isGameOver);
 		} else {
 			// if the grid is full, then check the scores
 			if (winnerArr.every((value) => value !== null)) {
 				if (scores.red > scores.blue) {
-					finalWinner = "X";
-					isGameOver = true;
+					// finalWinner = "X";
+					setIsGameOver(!isGameOver);
 				} else if (scores.red < scores.blue) {
-					finalWinner = "L";
-					isGameOver = true;
+					// finalWinner = "L";
+					setIsGameOver(!isGameOver);
 				} else {
-					finalWinner = "D";
-					isGameOver = true;
+					// finalWinner = "D";
+					setIsGameOver(!isGameOver);
 				}
 			}
 		}
-		return { finalWinner, isGameOver };
+		console.log("isGameOver ==> ", isGameOver);
+		console.log("-----------------------------------------");
 	};
 
 	useGameLogic(
