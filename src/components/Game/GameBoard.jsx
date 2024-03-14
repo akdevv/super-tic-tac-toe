@@ -6,7 +6,7 @@ import {
 	gameLogic,
 	isGridFull,
 } from "../../utils/gameLogic";
-import calculateGridWinner from "../../utils/helpers/calculateGridWinner";
+import getGridWinner from "../../utils/helpers/getGridWinner";
 
 function GameBoard(props) {
 	let isGameOver = false;
@@ -29,7 +29,7 @@ function GameBoard(props) {
 		// find is there is any winning lines
 		// make arr of lables from winnerGrid
 		const winnerLabels = winnerGrid.map((value) => value?.label);
-		const winnerLine = calculateGridWinner(winnerLabels);
+		const winnerLine = getGridWinner(winnerLabels);
 		if (winnerLine) {
 			finalWinner = winnerLine.label;
 			isGameOver = true;

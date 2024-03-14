@@ -10,13 +10,13 @@ function useGameStates() {
 	// winner grid state (which grid has been won)
 	const [winnerGrid, setWinnerGrid] = useState(Array(9).fill(null));
 
+	// scores
+	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
+
 	// Game board state
 	const [squares, setSquares] = useState(
 		[...Array(9)].map(() => Array(9).fill(null))
 	);
-
-	// scores
-	const [scores, setScores] = useState({ red: 0, gray: 0, blue: 0 });
 
 	return {
 		xIsNext,

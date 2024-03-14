@@ -1,31 +1,4 @@
-// calculate winner for individual tic-tac-toe
-const calculateGridWinner = (squares) => {
-	const lines = [
-		// horizontal
-		[0, 1, 2],
-		[3, 4, 5],
-		[6, 7, 8],
-		// vertical
-		[0, 3, 6],
-		[1, 4, 7],
-		[2, 5, 8],
-		// diagonal
-		[0, 4, 8],
-		[2, 4, 6],
-	];
-
-	for (let i = 0; i < lines.length; i++) {
-		const [a, b, c] = lines[i];
-		if (
-			squares[a] &&
-			squares[a] === squares[b] &&
-			squares[a] === squares[c]
-		) {
-			return { label: squares[a], sequence: [a, b, c] };
-		}
-	}
-	return null;
-};
+import getGridWinner from "./helpers/getGridWinner";
 
 // calculate winner for the entire tic-tac-toe
 const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
@@ -42,7 +15,7 @@ const calculateWinner = (squares, winnerGrid, setWinnerGrid) => {
 			);
 		}
 		if (square) {
-			const gridWinner = calculateGridWinner(square);
+			const gridWinner = getGridWinner(square);
 			// if X is winner, set winnerGrid to W
 			if (gridWinner && gridWinner.label === "X") {
 				setWinnerGrid((prev) =>
@@ -110,7 +83,7 @@ const gameLogic = (
 	nextSquares[i] = [...nextSquares[i]];
 
 	nextSquares[i][j] = xIsNext ? "X" : "O";
-	const gridWinner = calculateGridWinner(nextSquares[i]);
+	const gridWinner = getGridWinner(nextSquares[i]);
 
 	const nextActiveGrid = j;
 	if (
