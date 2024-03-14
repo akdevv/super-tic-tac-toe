@@ -2,6 +2,7 @@ import getScores from "./helpers/getScores";
 import isGridFull from "./helpers/isGridFull";
 import updateWonGrid from "./helpers/updateWonGrid";
 import updateActiveGrid from "./helpers/updateActiveGrid";
+import updateCells from "./helpers/updateCells";
 
 const gameLogic = (
 	i,
@@ -10,20 +11,12 @@ const gameLogic = (
 	setXIsNext,
 	setActiveGrid,
 	wonGrids,
+	setWonGrids,
 	cells,
 	setCells
 ) => {
-	// if cell is occupied, return
-	if (cells[i][j]) return;
-
-	// create copy of cells
-	const nextCells = [...cells];
-	nextCells[i] = [...nextCells[i]];
-
-	nextCells[i][j] = xIsNext ? "X" : "O";
-
+	const nextCells = updateCells(i, j, cells, xIsNext, setCells);
 	updateActiveGrid(i, j, nextCells, wonGrids, setActiveGrid);
-	setCells(nextCells);
 	setXIsNext(!xIsNext);
 };
 

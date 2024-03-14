@@ -4,7 +4,7 @@ import getGridWinner from "./getGridWinner";
 /**
  * Finds and updates the wonGrids state with winner & sequence of each grid.
  *
- * @param {Array<Array<string | null>>} cells 2D array containing the tic-tac-toe grid.
+ * @param {Array<Array<string | null>>} cells The current state of the game board.
  * @param {{
  * 		result: string,
  * 		sequence: number[]
