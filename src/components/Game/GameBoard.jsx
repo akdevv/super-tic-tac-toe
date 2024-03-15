@@ -1,5 +1,5 @@
 import renderGrid from "../../utils/renderGrid";
-import { gameLogic } from "../../utils/gameLogic";
+import updateGameStates from "../../utils/helpers/updateGameStates";
 import getGridWinner from "../../utils/helpers/getGridWinner";
 import useGameLogic from "../../hooks/useGameLogic";
 
@@ -52,7 +52,7 @@ function GameBoard(props) {
 	useGameLogic(cells, wonGrids, setScores, setWonGrids, calculateFinalWinner);
 
 	const handleClick = (i, j) => {
-		gameLogic(
+		updateGameStates(
 			i,
 			j,
 			xIsNext,

@@ -1,11 +1,7 @@
-import getScores from "./helpers/getScores";
-import isGridFull from "./helpers/isGridFull";
-import updateCells from "./helpers/updateCells";
-import updateWonGrid from "./helpers/updateWonGrid";
-import updateActiveGrid from "./helpers/updateActiveGrid";
+import { updateCells, updateActiveGrid } from "../gameFunctions";
 
 /**
- * Handles the game logic for each move.
+ * Update the game states based on the current move.
  *
  * @param {number} rowIndex The row index of the current move.
  * @param {number} colIndex The column index of the current move.
@@ -21,7 +17,7 @@ import updateActiveGrid from "./helpers/updateActiveGrid";
  * @param {Function} setCells Function to update current state of game board.
  */
 
-const gameLogic = (
+const updateGameStates = (
 	rowIndex,
 	colIndex,
 	xIsNext,
@@ -44,4 +40,4 @@ const gameLogic = (
 	setXIsNext(!xIsNext); // toggle player
 };
 
-export { gameLogic, isGridFull, updateWonGrid, getScores };
+export default updateGameStates;

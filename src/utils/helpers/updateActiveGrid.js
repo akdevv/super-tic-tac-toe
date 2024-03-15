@@ -1,5 +1,4 @@
-import isGridFull from "./isGridFull";
-import getGridWinner from "./getGridWinner";
+import { isGridFull, getGridWinner } from "../gameFunctions";
 
 /**
  * Finds and updates next active grid based on the current move.

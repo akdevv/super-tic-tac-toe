@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { updateWonGrid, getScores } from "../utils/gameLogic";
+import getScores from "../utils/helpers/getScores";
+import updateWonGrid from "../utils/helpers/updateWonGrid";
 
 function useGameLogic(
 	cells,

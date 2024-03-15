@@ -1,5 +1,5 @@
 import Cell from "../components/Game/Cell";
-import getWinningLineStyles from "./helpers/getWinningLineStyles";
+import getWinningLineStyles from "./getWinningLineStyles";
 import NameChip from "../components/NameChip";
 
 // renders a single cell
