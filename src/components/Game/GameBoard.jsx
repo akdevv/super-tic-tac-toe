@@ -1,5 +1,5 @@
 import renderGrid from "../../utils/renderGrid";
-import { gameLogic, isGridFull } from "../../utils/gameLogic";
+import { gameLogic } from "../../utils/gameLogic";
 import getGridWinner from "../../utils/helpers/getGridWinner";
 import useGameLogic from "../../hooks/useGameLogic";
 
@@ -52,18 +52,14 @@ function GameBoard(props) {
 	useGameLogic(cells, wonGrids, setScores, setWonGrids, calculateFinalWinner);
 
 	const handleClick = (i, j) => {
-		// if activeGrid is not null & activeGrid is not same as current cells & activeGrid is not full, do nothing
-		if (activeGrid !== null && activeGrid !== i && !isGridFull(activeGrid))
-			return;
-		if (wonGrids[i] !== null) return;
 		gameLogic(
 			i,
 			j,
 			xIsNext,
 			setXIsNext,
-			setActiveGrid,
 			wonGrids,
-			setWonGrids,
+			activeGrid,
+			setActiveGrid,
 			cells,
 			setCells
 		);
