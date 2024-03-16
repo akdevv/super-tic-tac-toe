@@ -19,8 +19,6 @@ function GameBoard(props) {
 		setIsGameOver,
 	} = props;
 
-	console.log("scores ==> ", scores);
-
 	// find the final winner
 	const calculateFinalWinner = (wonGrids, scores) => {
 		// let finalWinner;

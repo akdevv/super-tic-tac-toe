@@ -11,8 +11,6 @@ const renderCell = (value, i, j, handleClick) => (
 const renderGrid = (row, i, activeGrid, wonGrids, handleClick) => {
 	// winner line style
 	const lineStyle = getWinningLineStyles(wonGrids, i);
-	// console.log("lineStyle ==> ", lineStyle);
-	// console.log("winnerArr ==> ", winnerArr);
 
 	return (
 		<div
