@@ -67,8 +67,14 @@ function GameBoard(props) {
 		<>
 			<div className="flex items-center justify-center">
 				<div className="inline-grid grid-cols-3 sm:gap-1.5 gap-1 bg-primaryDark">
-					{cells.map((row, i) =>
-						renderGrid(row, i, activeGrid, wonGrids, handleClick)
+					{cells.map((grid, gridIndex) =>
+						renderGrid(
+							grid,
+							gridIndex,
+							activeGrid,
+							wonGrids,
+							handleClick
+						)
 					)}
 				</div>
 			</div>

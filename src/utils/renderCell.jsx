@@ -4,18 +4,18 @@ import Cell from "../components/Game/Cell";
  * Renders a single cell component.
  *
  * @param {string} value The value of cell (X, O, or null).
- * @param {number} rowIndex The row index of the cell.
- * @param {number} columnIndex The column index of the cell.
+ * @param {number} gridIndex Index of tic-tac-toe.
+ * @param {number} cellIndex Index of single square (cell) of tic-tac-toe.
  * @param {Function} handleClick Function to update cell's value.
  * @returns {JSX.Element} The cell component.
  */
 
-const renderCell = (value, rowIndex, colIndex, handleClick) => {
+const renderCell = (value, gridIndex, cellIndex, handleClick) => {
 	return (
 		<Cell
-			key={`${rowIndex}${colIndex}`}
+			key={`${gridIndex}${cellIndex}`}
 			value={value}
-			onClick={() => handleClick(rowIndex, colIndex)}
+			onClick={() => handleClick(gridIndex, cellIndex)}
 		/>
 	);
 };

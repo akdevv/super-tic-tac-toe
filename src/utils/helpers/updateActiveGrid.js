@@ -3,8 +3,8 @@ import { isGridFull, getGridWinner } from "../gameFunctions";
 /**
  * Finds and updates next active grid based on the current move.
  *
- * @param {number} rowIndex The row index of the current move.
- * @param {number} colIndex The column index of the current move.
+ * @param {number} gridIndex Grid (tic-tac-toe) index of current move.
+ * @param {number} cellIndex Cell (square) index of current move.
  * @param {Array<Array<string | null>>} cells The current state of the game board.
  * @param {{
  * 		result: string,
@@ -14,19 +14,19 @@ import { isGridFull, getGridWinner } from "../gameFunctions";
  */
 
 const updateActiveGrid = (
-	rowIndex,
-	colIndex,
+	gridIndex,
+	cellIndex,
 	cells,
 	wonGrids,
 	setActiveGrid
 ) => {
-	const gridWinner = getGridWinner(cells[rowIndex]);
+	const gridWinner = getGridWinner(cells[gridIndex]);
 
 	// nextActiveGrid is column index of current grid
-	const nextActiveGrid = colIndex;
+	const nextActiveGrid = cellIndex;
 	if (
-		isGridFull(cells, rowIndex) ||
-		(rowIndex === nextActiveGrid && gridWinner != null) ||
+		isGridFull(cells, gridIndex) ||
+		(gridIndex === nextActiveGrid && gridWinner != null) ||
 		wonGrids[nextActiveGrid] !== null ||
 		isGridFull(cells, nextActiveGrid)
 	) {
