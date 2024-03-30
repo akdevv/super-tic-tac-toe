@@ -11,7 +11,7 @@ function useGameStates() {
 	const [activeGrid, setActiveGrid] = useState(null);
 	const [wonGrids, setWonGrids] = useState(Array(9).fill(null));
 	const [scores, setScores] = useState({ wins: 0, draws: 0, losses: 0 });
-	const [isGameOver, setIsGameOver] = useState(false);
+	const [finalWinner, setFinalWinner] = useState(null);
 	const [cells, setCells] = useState(
 		[...Array(9)].map(() => Array(9).fill(null))
 	);
@@ -25,8 +25,8 @@ function useGameStates() {
 		setWonGrids,
 		scores,
 		setScores,
-		isGameOver,
-		setIsGameOver,
+		finalWinner,
+		setFinalWinner,
 		cells,
 		setCells,
 	};

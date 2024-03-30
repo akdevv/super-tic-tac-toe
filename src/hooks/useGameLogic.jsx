@@ -1,19 +1,27 @@
+import {
+	getScores,
+	updateWonGrid,
+	getFinalWinner,
+} from "../utils/gameFunctions";
 import { useEffect } from "react";
-import { getScores, updateWonGrid } from "../utils/gameFunctions";
 
 function useGameLogic(
 	cells,
-	winnerArr,
+	scores,
+	wonGrids,
 	setScores,
-	setwinnerArr,
-	calculateFinalWinner
+	setWonGrids,
+	setFinalWinner
 ) {
 	useEffect(() => {
-		updateWonGrid(cells, winnerArr, setwinnerArr);
-		const scores = getScores(winnerArr);
+		updateWonGrid(cells, wonGrids, setWonGrids);
+
+		const scores = getScores(wonGrids);
 		setScores(scores);
-		calculateFinalWinner(winnerArr, scores);
-	}, [cells, winnerArr]);
+
+		const finalWinner = getFinalWinner(wonGrids, scores);
+		if (finalWinner) setFinalWinner(finalWinner);
+	}, [cells, wonGrids]);
 }
 
 export default useGameLogic;
