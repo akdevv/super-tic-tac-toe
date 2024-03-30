@@ -1,3 +1,4 @@
+import WinnerCard from "../WinnerCard";
 import renderGrid from "../../utils/renderGrid";
 import useGameLogic from "../../hooks/useGameLogic";
 import updateGameStates from "../../utils/helpers/updateGameStates";
@@ -57,6 +58,7 @@ function GameBoard(props) {
 						)
 					)}
 				</div>
+				{finalWinner && <WinnerCard winner={finalWinner} />}
 			</div>
 		</>
 	);
