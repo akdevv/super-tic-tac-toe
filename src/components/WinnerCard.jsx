@@ -1,10 +1,10 @@
 function WinnerBanner({ winner }) {
 	let color;
 	let winnerName;
-	if (winner === "L") {
+	if (winner === "W") {
 		color = "bg-playerRed";
 		winnerName = "Player 1";
-	} else if (winner === "W") {
+	} else if (winner === "L") {
 		color = "bg-playerBlue";
 		winnerName = "Player 2";
 	} else {

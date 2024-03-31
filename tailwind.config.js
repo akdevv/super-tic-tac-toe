@@ -12,6 +12,7 @@ export default {
 			},
 			fontFamily: {
 				firaMono: ["Fira Mono", "sans"],
+				poppins: ["Poppins", "sans"],
 			},
 			width: {
 				"1/9": "11.1111111%",
