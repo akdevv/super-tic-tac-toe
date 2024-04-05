@@ -28,7 +28,8 @@ function App() {
 					{settingsCard && <div>SettingsCard</div>}
 					<Footer />
 					<Button text={"i"} onClick={() => toggleCard("infoCard")} />
-					{infoCard && <RulesCard />}
+					{/* {infoCard && <RulesCard />} */}
+					<RulesCard />
 				</div>
 			</div>
 		</>
