@@ -1,17 +1,84 @@
-# super-tic-tac-toe
+# Super Tic Tac Toe
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
--   [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
--   [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-# Game Rules
-
-1. Super Tic Tac Toe incorporates all the basic rules of regular Tic Tac Toe.
-2. The player using X starts the game. The subsequent move by player O must be in the smaller Tic Tac Toe grid that corresponds to the grid position marked by X.
-3. If the designated smaller Tic Tac Toe grid for the next move is either full or already won, the player is free to make their move in any grid.
-4. If a player's move leads to the next move being in a smaller Tic Tac Toe grid that is already won or full, the next player can choose any available space in any grid for their move.
-5. To win the game, a player must form a straight line (horizontal, vertical, or diagonal) comprised of three smaller Tic Tac Toe grids that they have won.
-6. The game ends when one of the players forms a line winner, or all grids are completed. The player with the most individual grid wins is declared the final winner if no line winner is formed.
+```
+super-tictactoe/
+├── frontend/          # Next.js application
+│   ├── app/
+│   │   ├── page.tsx              # Landing page (/)
+│   │   ├── layout.tsx            # Root layout
+│   │   └── game/                 # Game routes
+│   │       ├── layout.tsx        # Shared game layout (nav, settings button etc)
+│   │       ├── page.tsx          # Offline game page (/game)
+│   │       └── [gameId]/         # Dynamic route for online games
+│   │           └── page.tsx      # Online game page (/game/abc123)
+│   │
+│   ├── components/
+│   │   ├── landing/              # Landing page components
+│   │   │   ├── Hero.tsx         # Main hero section with title and auth buttons
+│   │   │   ├── Features.tsx     # Game features/rules section
+│   │   │   ├── AuthModal.tsx    # Modal containing both login/register forms
+│   │   │   └── Footer.tsx       # Landing page footer
+│   │   │
+│   │   ├── game/                # Core game components
+│   │   │   ├── Board/           # Main game board components
+│   │   │   │   ├── index.tsx    # Main board wrapper
+│   │   │   │   ├── SubBoard.tsx # Individual 3x3 board
+│   │   │   │   └── Cell.tsx     # Individual cell
+│   │   │   ├── PlayerInfo.tsx   # Shows current player & symbols
+│   │   │   └── GameStatus.tsx   # Game state, winner, etc.
+│   │   │
+│   │   ├── layout/              # Layout components
+│   │   │   ├── GameNav.tsx      # Navigation for game pages
+│   │   │   └── UserMenu.tsx     # User profile/logout dropdown
+│   │   │
+│   │   ├── modals/              # Game-related modals
+│   │   │   ├── SettingsModal/   # Settings popup
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── Profile.tsx  # Profile section
+│   │   │   │   └── HowToPlay.tsx # Rules section
+│   │   │   └── ShareGameModal.tsx # For sharing game link
+│   │   │
+│   │   └── ui/                  # Reusable UI components
+│   │       ├── Button.tsx
+│   │       ├── Modal.tsx
+│   │       └── Icons.tsx
+│   │
+│   ├── hooks/                   # Custom React hooks
+│   │   ├── useGame.ts          # Game state & logic
+│   │   ├── useOnlineGame.ts    # Online game specific logic
+│   │   └── useSocket.ts        # WebSocket connection
+│   │
+│   ├── lib/                    # Utility functions & configs
+│   │   ├── auth.ts            # Auth0 configuration
+│   │   ├── socket.ts          # WebSocket client setup
+│   │   └── gameUtils.ts       # Game helper functions
+│   │
+│   └── types/                  # TypeScript type definitions
+│       ├── game.ts            # Game-related types
+│       └── socket.ts          # WebSocket event types
+│
+└── backend/                    # Backend application
+    ├── src/
+    │   ├── server.ts          # Main server file
+    │   │
+    │   ├── game/              # Game logic
+    │   │   ├── Game.ts        # Game class with core logic
+    │   │   ├── Board.ts       # Board state management
+    │   │   └── utils.ts       # Game utility functions
+    │   │
+    │   ├── socket/            # WebSocket handling
+    │   │   ├── handlers/      # WebSocket event handlers
+    │   │   │   ├── game.ts    # Game-related events
+    │   │   │   └── connection.ts # Connection events
+    │   │   └── events.ts      # Event type definitions
+    │   │
+    │   ├── auth/              # Authentication
+    │   │   └── auth0.ts       # Auth0 configuration
+    │   │
+    │   └── types/             # Shared TypeScript types
+    │       └── index.ts
+    │
+    └── tests/                 # Backend tests
+        ├── game.test.ts
+        └── socket.test.ts
+```
