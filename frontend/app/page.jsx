@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import Button from "@/components/shared/button";
 import LoginModal from "@/components/landing/login-modal";
 import RegisterModal from "@/components/landing/register-modal";
-import Link from "next/link";
 
 export default function Home() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -32,7 +32,11 @@ export default function Home() {
 			/>
 
 			<footer>
-				<Link href="https://github.com/akdevv" target="_blank" className="font-fira">
+				<Link
+					href="https://github.com/akdevv"
+					target="_blank"
+					className="font-fira"
+				>
 					made by @akdevv
 				</Link>
 			</footer>
