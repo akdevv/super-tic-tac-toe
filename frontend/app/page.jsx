@@ -1,46 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import LoginModal from "@/components/auth/LoginModal";
-import RegisterModal from "@/components/auth/RegisterModal";
+import Button from "@/components/shared/button";
+import LoginModal from "@/components/landing/login-modal";
+import RegisterModal from "@/components/landing/register-modal";
+import Link from "next/link";
 
 export default function Home() {
-	const [isLoginOpen, setIsLoginOpen] = useState(false);
-	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-
+	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+	const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 	return (
-		<div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-			<div className="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full">
-				<h1 className="text-3xl font-bold text-center mb-8">
-					Welcome to Super Tic-Tac-Toe
-				</h1>
+		<div>
+			<h1 className="bg-gradient-to-r from-player-red-dark via-purple-600 to-player-blue-dark bg-clip-text text-transparent w-fit mx-auto text-7xl font-bold font-lilita">
+				SUPER TIC-TAC-TOE
+			</h1>
+			<p className="text-center text-xl">
+				The best Tic-Tac-Toe game in the world!
+			</p>
+			<Button onClick={() => setIsLoginModalOpen(true)}>Login</Button>
+			<Button onClick={() => setIsRegisterModalOpen(true)}>
+				Register
+			</Button>
 
-				<div className="space-y-4">
-					<button
-						onClick={() => setIsLoginOpen(true)}
-						className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
-					>
-						Login
-					</button>
+			<LoginModal
+				isOpen={isLoginModalOpen}
+				onClose={() => setIsLoginModalOpen(false)}
+			/>
+			<RegisterModal
+				isOpen={isRegisterModalOpen}
+				onClose={() => setIsRegisterModalOpen(false)}
+			/>
 
-					<button
-						onClick={() => setIsRegisterOpen(true)}
-						className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700"
-					>
-						Register
-					</button>
-				</div>
-
-				<LoginModal
-					isOpen={isLoginOpen}
-					onClose={() => setIsLoginOpen(false)}
-				/>
-
-				<RegisterModal
-					isOpen={isRegisterOpen}
-					onClose={() => setIsRegisterOpen(false)}
-				/>
-			</div>
+			<footer>
+				<Link href="https://github.com/akdevv" target="_blank" className="font-fira">
+					made by @akdevv
+				</Link>
+			</footer>
 		</div>
 	);
 }
