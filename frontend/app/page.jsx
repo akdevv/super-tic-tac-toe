@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import Button from "@/components/shared/button";
-import LoginModal from "@/components/landing/login-modal";
-import RegisterModal from "@/components/landing/register-modal";
+import LoginModal from "@/components/auth/login-modal";
+import RegisterModal from "@/components/auth/register-modal";
 
 export default function Home() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -17,10 +17,15 @@ export default function Home() {
 			<p className="text-center text-xl">
 				The best Tic-Tac-Toe game in the world!
 			</p>
-			<Button onClick={() => setIsLoginModalOpen(true)}>Login</Button>
-			<Button onClick={() => setIsRegisterModalOpen(true)}>
-				Register
-			</Button>
+			<div className="flex gap-10">
+				<Button onClick={() => setIsLoginModalOpen(true)}>Login</Button>
+				<Button
+					onClick={() => setIsRegisterModalOpen(true)}
+					variant="secondary"
+				>
+					Register
+				</Button>
+			</div>
 
 			<LoginModal
 				isOpen={isLoginModalOpen}

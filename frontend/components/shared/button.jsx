@@ -1,50 +1,39 @@
-import { forwardRef } from "react";
+export default function Button({
+	children,
+	variant = "primary",
+	size = "md",
+	disabled = false,
+	...props
+}) {
+	const baseStyles =
+		"border-2 border-black shadow-[6px_6px_0px_0px_#949392] font-medium disabled:cursor-not-allowed active:translate-x-1 active:translate-y-1 active:shadow-none transition-all";
 
-const Button = forwardRef(
-	(
-		{
-			children,
-			className = "",
-			variant = "primary",
-			size = "md",
-			disabled = false,
-			type = "button",
-			...props
-		},
-		ref
-	) => {
-		const baseStyles =
-			"inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+	const variants = {
+		primary:
+			"bg-light-900 text-light-100 hover:bg-light-900/80 disabled:bg-light-900/80",
+		secondary:
+			"bg-light-100 text-light-900 hover:bg-light-200 disabled:bg-light-100/80",
+		destructive:
+			"bg-error-light text-light-100 hover:bg-error-light/80 disabled:bg-error-light/80",
+		icon: "rounded-full w-14 h-14 bg-light-900 text-light-100 hover:bg-light-900/80",
+	};
 
-		const variants = {
-			primary:
-				"bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-600",
-			secondary:
-				"bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500",
-			outline:
-				"border border-gray-300 bg-transparent hover:bg-gray-100 focus-visible:ring-gray-500",
-		};
+	const sizes = {
+		sm: "px-4 py-1 text-sm",
+		md: "px-8 py-2 text-lg",
+		lg: "px-12 py-3 text-xl",
+		full: "w-full px-8 py-2",
+	};
 
-		const sizes = {
-			sm: "h-8 px-3 text-sm",
-			md: "h-10 px-4 text-base",
-			lg: "h-12 px-6 text-lg",
-		};
-
-		return (
-			<button
-				ref={ref}
-				type={type}
-				disabled={disabled}
-				className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-				{...props}
-			>
-				{children}
-			</button>
-		);
-	}
-);
-
-Button.displayName = "Button";
-
-export default Button;
+	return (
+		<button
+			disabled={disabled}
+			className={`${baseStyles} ${variants[variant]} ${
+				variant !== "icon" && sizes[size]
+			}`}
+			{...props}
+		>
+			{children}
+		</button>
+	);
+}
