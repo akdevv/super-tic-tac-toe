@@ -15,7 +15,7 @@ export default function Button({
 			"bg-light-100 text-light-900 hover:bg-light-200 disabled:bg-light-100/80",
 		destructive:
 			"bg-error-light text-light-100 hover:bg-error-light/80 disabled:bg-error-light/80",
-		icon: "rounded-full w-14 h-14 bg-light-900 text-light-100 hover:bg-light-900/80",
+		icon: "rounded-full w-14 h-14 flex items-center justify-center bg-light-900 text-light-100 hover:bg-light-900/80",
 	};
 
 	const sizes = {

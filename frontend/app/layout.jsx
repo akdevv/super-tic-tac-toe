@@ -1,6 +1,7 @@
 import "./globals.css";
+import { ThemeProvider } from "@/context/ThemeContext";
 
-export const metadata = {
+const metadata = {
 	title: "Super Tic-Tac-Toe",
 	description: "The best variation of Tic-Tac-Toe!",
 };
@@ -8,7 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
 	return (
 		<html lang="en" className="font-inter">
-			<body>{children}</body>
+			<body>
+				<ThemeProvider>{children}</ThemeProvider>
+			</body>
 		</html>
 	);
 }
