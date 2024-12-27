@@ -5,6 +5,7 @@ import { useState } from "react";
 import Button from "@/components/shared/button";
 import LoginModal from "@/components/auth/login-modal";
 import RegisterModal from "@/components/auth/register-modal";
+import Footer from "@/components/shared/footer";
 
 export default function Home() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -36,15 +37,7 @@ export default function Home() {
 				onClose={() => setIsRegisterModalOpen(false)}
 			/>
 
-			<footer>
-				<Link
-					href="https://github.com/akdevv"
-					target="_blank"
-					className="font-fira"
-				>
-					made by @akdevv
-				</Link>
-			</footer>
+			<Footer />
 		</div>
 	);
 }

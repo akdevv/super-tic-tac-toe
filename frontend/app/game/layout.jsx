@@ -5,6 +5,7 @@ import { Gear } from "@phosphor-icons/react";
 import Button from "@/components/shared/button";
 import { useTheme } from "@/context/ThemeContext";
 import { useState } from "react";
+import Footer from "@/components/shared/footer";
 
 export default function GameLayout({ children }) {
 	const { isDarkMode, toggleTheme } = useTheme();
@@ -13,35 +14,23 @@ export default function GameLayout({ children }) {
 	return (
 		<main
 			className={`${
-				isDarkMode ? "bg-light-900" : "bg-light-200"
-			} h-screen transition-colors duration-300`}
+				isDarkMode ? "bg-dark-800" : "bg-light-200"
+			} h-screen flex flex-col px-6 py-4 md:px-8 justify-between`}
 		>
-			<div className="absolute top-4 right-4">
-				<Button
-					variant="icon"
-					onClick={toggleTheme}
-					aria-label={
-						isDarkMode
-							? "Switch to light mode"
-							: "Switch to dark mode"
-					}
-				>
-					{isDarkMode ? (
-						<Sun size={24} weight="bold" />
-					) : (
-						<Moon size={24} weight="bold" />
-					)}
-				</Button>
-			</div>
-
-			<Button
-				variant="icon"
-				onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-			>
-				<Gear size={28} />
-			</Button>
-
 			{children}
+			<Footer />
 		</main>
 	);
 }
+
+// <Button
+// 	variant="icon"
+// 	onClick={toggleTheme}
+// 	aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+// >
+// 	{isDarkMode ? (
+// 		<Sun size={24} weight="bold" />
+// 	) : (
+// 		<Moon size={24} weight="bold" />
+// 	)}
+// </Button>;
