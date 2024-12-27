@@ -1,4 +1,5 @@
 import admin from "../config/firebaseAdmin.js";
+import { createGoogleUser } from "../service/auth.service.js";
 
 const login = async (req, res) => {
 	const { token } = req.body;
@@ -22,14 +23,15 @@ const googleLoginOrRegister = async (req, res) => {
 	try {
 		const decodedToken = await admin.auth().verifyIdToken(token);
 		console.log("decodedToken = ", decodedToken);
-		const { uid, name, email, picture, email_verified } = decodedToken;
+
+		const user = await createGoogleUser(decodedToken);
 
 		return res.status(200).json({
 			status: 200,
 			message: "User logged in successfully!",
 		});
 	} catch (error) {
-		console.error("Error verifying token: ", err.message);
+		console.error("Error verifying token: ", error.message);
 		return res.status(401).json({
 			status: 401,
 			message: "Unauthorized",
