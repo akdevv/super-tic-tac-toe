@@ -41,13 +41,17 @@ export default function SettingsButton() {
 						</Button>
 					</DrawerTrigger>
 
-					<DrawerContent>
+					<DrawerContent className="bg-light-100 dark:bg-dark-600 border-none">
 						<DrawerHeader>
-							<DrawerTitle>Settings</DrawerTitle>
+							<DrawerTitle className="text-3xl font-bricolage text-light-900 dark:text-dark-100">
+								Settings
+							</DrawerTitle>
 							<DrawerDescription />
 						</DrawerHeader>
 						{/* Compact Settings */}
-						<CompactSettings />
+						<div className="px-6 pb-8">
+							<CompactSettings />
+						</div>
 					</DrawerContent>
 				</Drawer>
 			) : (
