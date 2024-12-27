@@ -13,7 +13,7 @@ export default function Home() {
 	const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 	const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
 	return (
-		<div className="flex flex-col h-screen justify-between px-6 py-4 md:px-8 bg-dark-800">
+		<div className="flex flex-col h-screen justify-between px-6 py-4 md:px-8 bg-dark-700">
 			<div className="flex flex-col items-center justify-center h-full space-y-10">
 				<div>
 					<h1 className="bg-gradient-to-r from-player-red-dark via-purple-600 to-player-blue-dark bg-clip-text text-transparent w-fit mx-auto text-3xl sm:text-5xl md:text-7xl font-bold font-lilita">

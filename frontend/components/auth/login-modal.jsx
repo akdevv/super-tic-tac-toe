@@ -53,7 +53,7 @@ export default function LoginModal({ isOpen, onClose }) {
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						placeholder="Enter your email"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
@@ -63,7 +63,7 @@ export default function LoginModal({ isOpen, onClose }) {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						placeholder="Enter your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 					<div className="text-right">

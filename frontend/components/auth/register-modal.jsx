@@ -50,7 +50,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						value={username}
 						onChange={(e) => setUsername(e.target.value)}
 						placeholder="Enter your username"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
@@ -60,7 +60,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						placeholder="Enter your email"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
@@ -70,7 +70,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						placeholder="Enter your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
@@ -80,7 +80,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						value={confirmPassword}
 						onChange={(e) => setConfirmPassword(e.target.value)}
 						placeholder="Confirm your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium"
+						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 				</div>
