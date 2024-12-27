@@ -12,9 +12,9 @@ export default function AuthModal({ children, isOpen, onClose, type }) {
 	return (
 		<div
 			onClick={handleBackdropClick}
-			className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm"
+			className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center backdrop-blur-sm p-4"
 		>
-			<div className="bg-light-100 border-2 border-black shadow-[6px_6px_0px_0px_#949392] w-full max-w-md p-8 relative">
+			<div className="bg-light-100 border-2 border-black shadow-[6px_6px_0px_0px_#949392] w-full max-w-sm sm:max-w-md p-4 sm:p-8 relative">
 				<button
 					onClick={onClose}
 					className="absolute right-4 top-4 font-bold transition-colors"
