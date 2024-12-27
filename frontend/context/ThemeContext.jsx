@@ -5,25 +5,40 @@ import { createContext, useContext, useState, useEffect } from "react";
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-	const [isDarkMode, setIsDarkMode] = useState(() => {
-		if (localStorage.getItem("theme")) {
-			return localStorage.getItem("theme") === "dark";
-		}
-		return false;
-	});
+	const [isDarkMode, setIsDarkMode] = useState(false);
 
-	// Load theme preference from localStorage on mount
 	useEffect(() => {
+		// Check initial theme preference
 		const savedTheme = localStorage.getItem("theme");
-		if (savedTheme) {
-			setIsDarkMode(savedTheme === "dark");
+		const prefersDark = window.matchMedia(
+			"(prefers-color-scheme: dark)"
+		).matches;
+
+		// Set initial theme based on localStorage or system preference
+		const initialTheme = savedTheme ? savedTheme === "dark" : prefersDark;
+		setIsDarkMode(initialTheme);
+
+		// Update document class and localStorage
+		if (initialTheme) {
+			document.documentElement.classList.add("dark");
 		}
 	}, []);
 
 	const toggleTheme = () => {
-		const newTheme = !isDarkMode;
-		setIsDarkMode(newTheme);
-		localStorage.setItem("theme", newTheme ? "dark" : "light");
+		setIsDarkMode((prev) => {
+			const newTheme = !prev;
+			// Update localStorage
+			localStorage.setItem("theme", newTheme ? "dark" : "light");
+
+			// Update document class
+			if (newTheme) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+
+			return newTheme;
+		});
 	};
 
 	return (

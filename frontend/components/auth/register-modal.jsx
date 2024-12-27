@@ -1,15 +1,43 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signInWithPopup } from "firebase/auth";
+import { GoogleLogo } from "@phosphor-icons/react";
+import { auth, provider } from "@/firebase/index";
+
 import AuthModal from "./auth-modal";
 import Button from "@/components/shared/button";
-import { GoogleLogo } from "@phosphor-icons/react";
+
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function RegisterModal({ isOpen, onClose }) {
+	const router = useRouter();
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
+
+	const handleGoogleRegister = async () => {
+		try {
+			const data = await signInWithPopup(auth, provider);
+			const token = await data.user.getIdToken();
+			const res = await axios.post(`${backendURL}/api/auth/google`, {
+				token,
+			});
+
+			if (res.status === 200) {
+				console.log("Google registration successful");
+				localStorage.setItem("token", token);
+				router.push("/game");
+			} else {
+				console.error("Google registration failed");
+			}
+		} catch (error) {
+			console.error("Google registration error: ", error);
+		}
+	};
 
 	return (
 		<AuthModal isOpen={isOpen} onClose={onClose} type="register">
@@ -70,15 +98,19 @@ export default function RegisterModal({ isOpen, onClose }) {
 						<span className="px-2 bg-white text-light-600">OR</span>
 					</div>
 				</div>
-
-				{/* Google Register Button */}
-				<Button size="full" variant="secondary" onClick={() => {}}>
-					<div className="flex items-center justify-center gap-2">
-						<GoogleLogo size={28} weight="bold" />
-						<span>Continue with Google</span>
-					</div>
-				</Button>
 			</form>
+
+			{/* Google Register Button */}
+			<Button
+				size="full"
+				variant="secondary"
+				onClick={handleGoogleRegister}
+			>
+				<div className="flex items-center justify-center gap-2">
+					<GoogleLogo size={28} weight="bold" />
+					<span>Continue with Google</span>
+				</div>
+			</Button>
 
 			{/* Privacy Policy */}
 			<div className="mt-6 text-xs text-light-500 text-center">
@@ -120,9 +152,4 @@ export default function RegisterModal({ isOpen, onClose }) {
 // 		} catch (error) {
 // 			console.error("Registration error: ", error);
 // 		}
-// 	};
-
-// 	const handleGoogleRegister = () => {
-// 		// TODO: Implement Google registration
-// 		console.log("Google registration attempted");
 // 	};

@@ -89,15 +89,15 @@ export default function LoginModal({ isOpen, onClose }) {
 						<span className="px-2 bg-white text-light-600">OR</span>
 					</div>
 				</div>
-
-				{/* Google Login Button */}
-				<Button size="full" variant="secondary" onClick={() => {}}>
-					<div className="flex items-center justify-center gap-2">
-						<GoogleLogo size={28} weight="bold" />
-						<span>Continue with Google</span>
-					</div>
-				</Button>
 			</form>
+
+			{/* Google Login Button */}
+			<Button size="full" variant="secondary" onClick={() => {}}>
+				<div className="flex items-center justify-center gap-2">
+					<GoogleLogo size={28} weight="bold" />
+					<span>Continue with Google</span>
+				</div>
+			</Button>
 
 			{/* Privacy Policy */}
 			<div className="mt-6 text-xs text-light-500 text-center">
