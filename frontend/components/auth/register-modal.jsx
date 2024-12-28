@@ -1,18 +1,20 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { auth, provider } from "@/firebase/index";
 import { ToastAction } from "@/components/ui/toast";
-import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import {
 	Eye,
 	EyeClosed,
 	GoogleLogo,
 	WarningCircle,
 } from "@phosphor-icons/react";
+
+import AuthModal from "./auth-modal";
+import Button from "@/components/shared/button";
+
 import {
 	validateUsername,
 	validateEmail,
@@ -20,9 +22,8 @@ import {
 	validatePasswordMatch,
 	firebaseErrors,
 } from "@/validators/user";
-
-import AuthModal from "./auth-modal";
-import Button from "@/components/shared/button";
+import { auth, provider } from "@/firebase/index";
+import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -48,7 +49,6 @@ export default function RegisterModal({ isOpen, onClose }) {
 			description: firebaseErrors(error.code),
 			status: "error",
 			duration: 2000,
-			isClosable: true,
 			position: "top",
 			variant: "destructive",
 			action: <ToastAction altText="Try again">Try again</ToastAction>,
@@ -67,7 +67,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 	// render username and email input fields
 	const renderInputFields = (id, type, value, placeholder) => {
 		return (
-			<div>
+			<>
 				<div
 					className={`flex items-center gap-2 pr-3 border-2 transition-all duration-300 ${
 						errors[id] ? "border-error-light" : "border-black"
@@ -95,14 +95,14 @@ export default function RegisterModal({ isOpen, onClose }) {
 						{errors[id]}
 					</p>
 				)}
-			</div>
+			</>
 		);
 	};
 
 	// render password input fields
 	const renderPasswordField = (id, value, placeholder) => {
 		return (
-			<div>
+			<>
 				<div
 					className={`flex items-center gap-2 pr-3 border-2 transition-all duration-300 ${
 						errors[id] ? "border-error-light" : "border-black"
@@ -125,12 +125,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						className="w-full p-3 focus:outline-none font-medium bg-light-100"
 						required
 					/>
-					{errors.username && id === "username" && (
-						<WarningCircle size={28} className="text-error-light" />
-					)}
-					{errors.email && id === "email" && (
-						<WarningCircle size={28} className="text-error-light" />
-					)}
+
 					{/* password toggle - eye icon */}
 					{id === "password" && (
 						<div
@@ -163,7 +158,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 						{errors[id]}
 					</p>
 				)}
-			</div>
+			</>
 		);
 	};
 
@@ -201,38 +196,52 @@ export default function RegisterModal({ isOpen, onClose }) {
 		}
 	};
 
-	const handleRegister = async (e) => {
-		e.preventDefault();
+	const handleRegister = useCallback(
+		async (e) => {
+			e.preventDefault();
 
-		// Check if there are any errors
-		const hasErrors = Object.values(errors).some((error) => error !== null);
-		if (hasErrors) {
-			console.error("Please fix form errors before submitting!");
-			return;
-		}
-
-		try {
-			const data = await createUserWithEmailAndPassword(
-				auth,
-				email,
-				password
+			// Check if there are any errors
+			const hasErrors = Object.values(errors).some(
+				(error) => error !== null
 			);
-			const token = await data.user.getIdToken();
-
-			const res = await axios.post(`${backendURL}/api/auth/register`, {
-				token,
-				username,
-			});
-			if (res.status === 200) {
-				localStorage.setItem("token", token);
-				router.push("/game");
-			} else {
-				console.error("Registration failed!");
+			if (hasErrors) {
+				console.error("Please fix form errors before submitting!");
+				return;
 			}
-		} catch (error) {
-			errorToast(error);
-		}
-	};
+
+			try {
+				setIsSubmitting(true);
+
+				const data = await createUserWithEmailAndPassword(
+					auth,
+					form.email,
+					form.password
+				);
+				const token = await data.user.getIdToken();
+
+				const res = await axios.post(
+					`${backendURL}/api/auth/register`,
+					{
+						token,
+						username: form.username,
+					}
+				);
+
+				if (res.status === 200) {
+					localStorage.setItem("token", token);
+					router.push("/game");
+				} else {
+					console.error("Registration failed!");
+				}
+			} catch (error) {
+				console.error("Registration error: ", error.message);
+				errorToast(error);
+			} finally {
+				setIsSubmitting(false);
+			}
+		},
+		[form]
+	);
 
 	const handleGoogleRegister = async () => {
 		try {
@@ -255,7 +264,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 
 	return (
 		<AuthModal isOpen={isOpen} onClose={onClose} type="register">
-			<form onSubmit={handleRegister}>
+			<form>
 				<div className="space-y-2 mb-8">
 					{/* username */}
 					{renderInputFields(
@@ -289,10 +298,10 @@ export default function RegisterModal({ isOpen, onClose }) {
 				</div>
 
 				<Button
-					type="submit"
 					variant="destructive"
 					disabled={isSubmitting}
 					size="full"
+					onClick={handleRegister}
 				>
 					{isSubmitting ? "Creating account..." : "Create Account"}
 				</Button>

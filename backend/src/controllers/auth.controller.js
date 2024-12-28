@@ -1,5 +1,9 @@
+import {
+	createEmailUser,
+	loginEmailUser,
+	createGoogleUser,
+} from "../service/auth.service.js";
 import admin from "../config/firebaseAdmin.js";
-import { createEmailUser, createGoogleUser } from "../service/auth.service.js";
 
 // LOGIN ROUTE
 const login = async (req, res) => {
@@ -7,34 +11,34 @@ const login = async (req, res) => {
 
 	try {
 		const decodedToken = await admin.auth().verifyIdToken(token);
-		const user = await createEmailUser(decodedToken);
+		const user = await loginEmailUser(decodedToken);
 
 		return res.status(200).json({
 			user,
-			message: "Login successful",
+			message: "Login successful!",
 		});
 	} catch (error) {
 		console.error("Login error: ", error.message);
-		return res.status(500).json({ message: "Login failed" });
+		return res.status(500).json({ message: "Login failed!" });
 	}
 };
 
 // REGISTER ROUTE
 const register = async (req, res) => {
 	const { token, username } = req.body;
-	console.log("token , username = ", token, username);
 
 	try {
 		const decodedToken = await admin.auth().verifyIdToken(token);
-		// const user = await createEmailUser(decodedToken);
-		console.log("decodedToken = ", decodedToken);
+
+		const user = await createEmailUser(username, decodedToken);
 
 		return res.status(200).json({
-			message: "Registration successful",
+			user,
+			message: "Registration successful!",
 		});
 	} catch (error) {
 		console.error("Registration error: ", error.message);
-		return res.status(500).json({ message: "Registration failed" });
+		return res.status(500).json({ message: "Registration failed!" });
 	}
 };
 
@@ -52,7 +56,7 @@ const googleLoginOrRegister = async (req, res) => {
 		});
 	} catch (error) {
 		console.error("Google authentication error: ", error.message);
-		return res.status(401).json({ message: "Unauthorized" });
+		return res.status(401).json({ message: "Unauthorized!" });
 	}
 };
 

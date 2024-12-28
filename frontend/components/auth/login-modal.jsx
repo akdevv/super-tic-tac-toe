@@ -1,47 +1,82 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GoogleLogo } from "@phosphor-icons/react";
-import { auth, provider } from "@/firebase/index";
-import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import { useToast } from "@/hooks/use-toast";
+import { useState, useCallback } from "react";
+import { ToastAction } from "@/components/ui/toast";
+import { Eye, EyeClosed, GoogleLogo } from "@phosphor-icons/react";
 
 import AuthModal from "./auth-modal";
 import Button from "@/components/shared/button";
+
+import { auth, provider } from "@/firebase/index";
+import { firebaseErrors } from "@/validators/user";
+import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 
 const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function LoginModal({ isOpen, onClose }) {
 	const router = useRouter();
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const { toast } = useToast();
+	const [form, setForm] = useState({
+		email: "",
+		password: "",
+	});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-	const handleLogin = async (e) => {
-		e.preventDefault();
-
-		try {
-			const data = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password
-			);
-			const token = await data.user.getIdToken();
-
-			const res = await axios.post(`${backendURL}/api/auth/login`, {
-				token,
-			});
-
-			if (res.status === 200) {
-				console.log("Login successful");
-				router.push("/game");
-			} else {
-				console.error("Login failed");
-			}
-		} catch (error) {
-			console.error("Login error: ", error);
-		}
+	// error toast
+	const errorToast = (error) => {
+		toast({
+			title: "Registration failed!",
+			description: firebaseErrors(error.code),
+			status: "error",
+			duration: 2000,
+			position: "top",
+			variant: "destructive",
+			action: <ToastAction altText="Try again">Try again</ToastAction>,
+		});
 	};
+
+	const handleInputChange = (e) => {
+		const { id, value } = e.target;
+		setForm((prev) => ({ ...prev, [id]: value }));
+	};
+
+	const handleLogin = useCallback(
+		async (e) => {
+			e.preventDefault();
+
+			try {
+				setIsSubmitting(true);
+
+				const data = await signInWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+				const token = await data.user.getIdToken();
+
+				const res = await axios.post(`${backendURL}/api/auth/login`, {
+					token,
+				});
+
+				if (res.status === 200) {
+					localStorage.setItem("token", token);
+					router.push("/game");
+				} else {
+					console.error("Login failed");
+				}
+			} catch (error) {
+				console.error("Login error: ", error);
+				errorToast(error);
+			} finally {
+				setIsSubmitting(false);
+			}
+		},
+		[form]
+	);
 
 	const handleGoogleLogin = async () => {
 		try {
@@ -59,33 +94,51 @@ export default function LoginModal({ isOpen, onClose }) {
 			}
 		} catch (error) {
 			console.error("Google login error: ", error);
+			errorToast(error);
 		}
 	};
 
 	return (
 		<AuthModal isOpen={isOpen} onClose={onClose} type="login">
-			<form onSubmit={() => {}}>
+			<form>
 				{/* Email and Password Inputs */}
 				<div className="space-y-2 mb-8">
 					<input
 						type="email"
 						id="email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						value={form.email}
+						onChange={handleInputChange}
 						placeholder="Enter your email"
 						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
-					<input
-						type="password"
-						id="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						placeholder="Enter your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
-						required
-					/>
+					{/* Password Input */}
+
+					<div className="flex items-center gap-2 pr-3 border-2 border-black transition-all duration-300">
+						<input
+							type={isPasswordVisible ? "text" : "password"}
+							id="password"
+							value={form.password}
+							onChange={handleInputChange}
+							placeholder="Enter your password"
+							className="w-full p-3 focus:outline-none font-medium bg-light-100"
+							required
+						/>
+						<div
+							className="cursor-pointer transition-all duration-300"
+							onClick={() =>
+								setIsPasswordVisible(!isPasswordVisible)
+							}
+						>
+							{isPasswordVisible ? (
+								<Eye size={28} />
+							) : (
+								<EyeClosed size={28} />
+							)}
+						</div>
+					</div>
+
 					<div className="text-right">
 						<a
 							href="/forgot-password"
@@ -96,8 +149,13 @@ export default function LoginModal({ isOpen, onClose }) {
 					</div>
 				</div>
 
-				<Button type="submit" variant="destructive" size="full">
-					Login with Email
+				<Button
+					variant="destructive"
+					disabled={isSubmitting}
+					size="full"
+					onClick={handleLogin}
+				>
+					{isSubmitting ? "Logging in..." : "Login with Email"}
 				</Button>
 
 				{/* Divider */}
