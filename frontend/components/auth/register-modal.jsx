@@ -3,9 +3,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithPopup } from "firebase/auth";
 import { GoogleLogo } from "@phosphor-icons/react";
 import { auth, provider } from "@/firebase/index";
+import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	validateUsername,
+	validateEmail,
+	validatePassword,
+	validatePasswordMatch,
+	firebaseErrors,
+} from "@/validators/user";
 
 import AuthModal from "./auth-modal";
 import Button from "@/components/shared/button";
@@ -14,10 +21,56 @@ const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function RegisterModal({ isOpen, onClose }) {
 	const router = useRouter();
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
+	const [form, setForm] = useState({
+		username: "",
+		email: "",
+		password: "",
+		confirmPassword: "",
+	});
+	const [errors, setErrors] = useState({});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const handleInputChange = (e) => {
+		const { id, value } = e.target;
+		setForm({ ...form, [id]: value });
+
+		// clear errors
+		setErrors({ ...errors, [id]: "" });
+
+		// validate username
+		if (id === "username") {
+			const usernameError = validateUsername(value);
+			setErrors({ ...errors, username: usernameError });
+		}
+	};
+
+	const handleRegister = async (e) => {
+		e.preventDefault();
+		console.log("form = ", form);
+
+		// try {
+		// 	const data = await createUserWithEmailAndPassword(
+		// 		auth,
+		// 		email,
+		// 		password
+		// 	);
+		// 	console.log("data = ", data);
+		// 	const token = await data.user.getIdToken();
+		// 	console.log("token = ", token);
+		// 	// const res = await axios.post(`${backendURL}/api/auth/register`, {
+		// 	// 	token,
+		// 	// });
+		// 	// if (res.status === 200) {
+		// 	// 	console.log("Registration successful");
+		// 	// 	console.log("res = ", res);
+		// 	// 	router.push("/game");
+		// 	// } else {
+		// 	// 	console.error("Registration failed");
+		// 	// }
+		// } catch (error) {
+		// 	console.error("Registration error: ", error);
+		// }
+	};
 
 	const handleGoogleRegister = async () => {
 		try {
@@ -28,11 +81,10 @@ export default function RegisterModal({ isOpen, onClose }) {
 			});
 
 			if (res.status === 200) {
-				console.log("Google registration successful");
 				localStorage.setItem("token", token);
 				router.push("/game");
 			} else {
-				console.error("Google registration failed");
+				console.error("Google registration failed!");
 			}
 		} catch (error) {
 			console.error("Google registration error: ", error);
@@ -41,44 +93,47 @@ export default function RegisterModal({ isOpen, onClose }) {
 
 	return (
 		<AuthModal isOpen={isOpen} onClose={onClose} type="register">
-			<form onSubmit={() => {}}>
-				{/* username, email, password, confirm password */}
+			<form onSubmit={handleRegister}>
 				<div className="space-y-2 mb-8">
+					{/* username */}
 					<input
 						type="text"
 						id="username"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
+						value={form.username}
+						onChange={handleInputChange}
 						placeholder="Enter your username"
 						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
+					{/* email */}
 					<input
 						type="email"
 						id="email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						value={form.email}
+						onChange={handleInputChange}
 						placeholder="Enter your email"
 						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
+					{/* password */}
 					<input
 						type="password"
 						id="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
+						value={form.password}
+						onChange={handleInputChange}
 						placeholder="Enter your password"
 						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
 					/>
 
+					{/* confirm password */}
 					<input
 						type="password"
 						id="confirmPassword"
-						value={confirmPassword}
-						onChange={(e) => setConfirmPassword(e.target.value)}
+						value={form.confirmPassword}
+						onChange={handleInputChange}
 						placeholder="Confirm your password"
 						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
 						required
@@ -128,28 +183,3 @@ export default function RegisterModal({ isOpen, onClose }) {
 		</AuthModal>
 	);
 }
-
-// 	const handleRegister = async (e) => {
-// 		e.preventDefault();
-
-// 		try {
-// 			const data = await createUserWithEmailAndPassword(
-// 				auth,
-// 				email,
-// 				password
-// 			);
-// 			const token = await data.user.getIdToken();
-// 			console.log("token = ", token);
-// 			console.log("data = ", data);
-
-// 			// const res = await axios.post(`${baseURL}/api/auth/register`, {
-// 			// 	token,
-// 			// });
-// 			// if (res.status === 200) {
-// 			// 	console.log("Registration successful");
-// 			// 	console.log("res = ", res);
-// 			// }
-// 		} catch (error) {
-// 			console.error("Registration error: ", error);
-// 		}
-// 	};

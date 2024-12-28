@@ -2,15 +2,18 @@
 
 import axios from "axios";
 import { useState } from "react";
-import AuthModal from "./auth-modal";
-import Button from "@/components/shared/button";
+import { useRouter } from "next/navigation";
 import { GoogleLogo } from "@phosphor-icons/react";
-import { auth, googleProvider } from "@/firebase/index";
+import { auth, provider } from "@/firebase/index";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+import AuthModal from "./auth-modal";
+import Button from "@/components/shared/button";
+
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function LoginModal({ isOpen, onClose }) {
+	const router = useRouter();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -25,7 +28,7 @@ export default function LoginModal({ isOpen, onClose }) {
 			);
 			const token = await data.user.getIdToken();
 
-			const res = await axios.post(`${baseURL}/api/auth/login`, {
+			const res = await axios.post(`${backendURL}/api/auth/login`, {
 				token,
 			});
 
@@ -40,7 +43,24 @@ export default function LoginModal({ isOpen, onClose }) {
 		}
 	};
 
-	const handleGoogleLogin = async () => {};
+	const handleGoogleLogin = async () => {
+		try {
+			const data = await signInWithPopup(auth, provider);
+			const token = await data.user.getIdToken();
+			const res = await axios.post(`${backendURL}/api/auth/google`, {
+				token,
+			});
+
+			if (res.status === 200) {
+				localStorage.setItem("token", token);
+				router.push("/game");
+			} else {
+				console.error("Google login failed!");
+			}
+		} catch (error) {
+			console.error("Google login error: ", error);
+		}
+	};
 
 	return (
 		<AuthModal isOpen={isOpen} onClose={onClose} type="login">
@@ -92,7 +112,7 @@ export default function LoginModal({ isOpen, onClose }) {
 			</form>
 
 			{/* Google Login Button */}
-			<Button size="full" variant="secondary" onClick={() => {}}>
+			<Button size="full" variant="secondary" onClick={handleGoogleLogin}>
 				<div className="flex items-center justify-center gap-2">
 					<GoogleLogo size={28} weight="bold" />
 					<span>Continue with Google</span>
@@ -115,22 +135,3 @@ export default function LoginModal({ isOpen, onClose }) {
 		</AuthModal>
 	);
 }
-
-// const handleLogin = async (e) => {
-// 	e.preventDefault();
-
-// 	try {
-// 		const data = await signInWithEmailAndPassword(auth, email, password);
-// 		const token = await data.user.getIdToken();
-
-// 		// const res = await axios.post(`${baseURL}/api/auth/login`, {
-// 		// 	token,
-// 		// });
-// 		// if (res.status === 200) {
-// 		// 	console.log("Login successful");
-// 		// 	console.log("res = ", res);
-// 		// }
-// 	} catch (error) {
-// 		console.error("Login error: ", error);
-// 	}
-// };

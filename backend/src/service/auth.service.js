@@ -1,5 +1,13 @@
 import prisma from "../config/prisma.js";
 
+export const createEmailUser = async (userData) => {
+	try {
+		
+	} catch (error) {
+		throw new Error(`Error creating email user: ${error.message}`);
+	}
+};
+
 /**
  * Create a new user in the database
  * @param Object userData - The user data from Firebase
