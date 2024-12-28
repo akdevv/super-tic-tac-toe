@@ -53,8 +53,8 @@ export default function LoginModal({ isOpen, onClose }) {
 
 				const data = await signInWithEmailAndPassword(
 					auth,
-					email,
-					password
+					form.email,
+					form.password
 				);
 				const token = await data.user.getIdToken();
 
@@ -140,10 +140,7 @@ export default function LoginModal({ isOpen, onClose }) {
 					</div>
 
 					<div className="text-right">
-						<a
-							href="/forgot-password"
-							className="text-sm text-light-500 hover:underline"
-						>
+						<a className="text-sm text-light-500 hover:underline">
 							Forgot Password?
 						</a>
 					</div>
