@@ -3,9 +3,14 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GoogleLogo } from "@phosphor-icons/react";
 import { auth, provider } from "@/firebase/index";
 import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+	Eye,
+	EyeClosed,
+	GoogleLogo,
+	WarningCircle,
+} from "@phosphor-icons/react";
 import {
 	validateUsername,
 	validateEmail,
@@ -29,18 +34,149 @@ export default function RegisterModal({ isOpen, onClose }) {
 	});
 	const [errors, setErrors] = useState({});
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+		useState(false);
+
+	const togglePassword = (id) => {
+		if (id === "password") {
+			setIsPasswordVisible(!isPasswordVisible);
+		} else if (id === "confirmPassword") {
+			setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+		}
+	};
+
+	const renderInputFields = (id, type, value, placeholder) => {
+		return (
+			<div>
+				<div
+					className={`flex items-center gap-2 pr-3 border-2 transition-all duration-300 ${
+						errors[id] ? "border-error-light" : "border-black"
+					}`}
+				>
+					<input
+						type={type}
+						id={id}
+						value={value}
+						onChange={handleInputChange}
+						placeholder={placeholder}
+						className="w-full p-3 focus:outline-none font-medium bg-light-100"
+						required
+					/>
+					{errors.username && id === "username" && (
+						<WarningCircle size={28} className="text-error-light" />
+					)}
+					{errors.email && id === "email" && (
+						<WarningCircle size={28} className="text-error-light" />
+					)}
+				</div>
+
+				{errors[id] && (
+					<p className="text-error-normal text-sm font-light">
+						{errors[id]}
+					</p>
+				)}
+			</div>
+		);
+	};
+
+	const renderPasswordField = (id, value, placeholder) => {
+		return (
+			<div>
+				<div
+					className={`flex items-center gap-2 pr-3 border-2 transition-all duration-300 ${
+						errors[id] ? "border-error-light" : "border-black"
+					}`}
+				>
+					<input
+						type={
+							id === "password"
+								? isPasswordVisible
+									? "text"
+									: "password"
+								: isConfirmPasswordVisible
+								? "text"
+								: "password"
+						}
+						id={id}
+						value={value}
+						onChange={handleInputChange}
+						placeholder={placeholder}
+						className="w-full p-3 focus:outline-none font-medium bg-light-100"
+						required
+					/>
+					{errors.username && id === "username" && (
+						<WarningCircle size={28} className="text-error-light" />
+					)}
+					{errors.email && id === "email" && (
+						<WarningCircle size={28} className="text-error-light" />
+					)}
+					{id === "password" && (
+						<div
+							className="cursor-pointer transition-all duration-300"
+							onClick={() => togglePassword(id)}
+						>
+							{isPasswordVisible ? (
+								<Eye size={28} />
+							) : (
+								<EyeClosed size={28} />
+							)}
+						</div>
+					)}
+					{id === "confirmPassword" && (
+						<div
+							className="cursor-pointer transition-all duration-300"
+							onClick={() => togglePassword(id)}
+						>
+							{isConfirmPasswordVisible ? (
+								<Eye size={28} />
+							) : (
+								<EyeClosed size={28} />
+							)}
+						</div>
+					)}
+				</div>
+
+				{errors[id] && (
+					<p className="text-error-normal text-sm font-light">
+						{errors[id]}
+					</p>
+				)}
+			</div>
+		);
+	};
 
 	const handleInputChange = (e) => {
 		const { id, value } = e.target;
-		setForm({ ...form, [id]: value });
+		setForm((prev) => ({ ...prev, [id]: value }));
 
 		// clear errors
 		setErrors({ ...errors, [id]: "" });
 
-		// validate username
+		// validate inputs
 		if (id === "username") {
-			const usernameError = validateUsername(value);
-			setErrors({ ...errors, username: usernameError });
+			setErrors({ ...errors, username: validateUsername(value) });
+		}
+		if (id === "email") {
+			setErrors({ ...errors, email: validateEmail(value) });
+		}
+		if (id === "password") {
+			setErrors({ ...errors, password: validatePassword(value) });
+			if (form.confirmPassword) {
+				setErrors({
+					...errors,
+					confirmPassword: validatePasswordMatch(
+						value,
+						form.confirmPassword
+					),
+				});
+			}
+		}
+		if (id === "confirmPassword") {
+			setErrors({
+				...errors,
+				confirmPassword: validatePasswordMatch(value, form.password),
+			});
 		}
 	};
 
@@ -96,48 +232,34 @@ export default function RegisterModal({ isOpen, onClose }) {
 			<form onSubmit={handleRegister}>
 				<div className="space-y-2 mb-8">
 					{/* username */}
-					<input
-						type="text"
-						id="username"
-						value={form.username}
-						onChange={handleInputChange}
-						placeholder="Enter your username"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
-						required
-					/>
+					{renderInputFields(
+						"username",
+						"text",
+						form.username,
+						"Enter your username"
+					)}
 
 					{/* email */}
-					<input
-						type="email"
-						id="email"
-						value={form.email}
-						onChange={handleInputChange}
-						placeholder="Enter your email"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
-						required
-					/>
+					{renderInputFields(
+						"email",
+						"email",
+						form.email,
+						"Enter your email"
+					)}
 
 					{/* password */}
-					<input
-						type="password"
-						id="password"
-						value={form.password}
-						onChange={handleInputChange}
-						placeholder="Enter your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
-						required
-					/>
+					{renderPasswordField(
+						"password",
+						form.password,
+						"Enter your password"
+					)}
 
 					{/* confirm password */}
-					<input
-						type="password"
-						id="confirmPassword"
-						value={form.confirmPassword}
-						onChange={handleInputChange}
-						placeholder="Confirm your password"
-						className="w-full p-3 border-2 border-black focus:outline-none font-medium bg-light-100"
-						required
-					/>
+					{renderPasswordField(
+						"confirmPassword",
+						form.confirmPassword,
+						"Confirm your password"
+					)}
 				</div>
 
 				<Button type="submit" variant="destructive" size="full">
