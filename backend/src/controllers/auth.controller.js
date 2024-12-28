@@ -1,5 +1,5 @@
 import admin from "../config/firebaseAdmin.js";
-import { createGoogleUser } from "../service/auth.service.js";
+import { createEmailUser, createGoogleUser } from "../service/auth.service.js";
 
 // LOGIN ROUTE
 const login = async (req, res) => {
@@ -21,10 +21,12 @@ const login = async (req, res) => {
 
 // REGISTER ROUTE
 const register = async (req, res) => {
-	const { token } = req.body;
+	const { token, username } = req.body;
+	console.log("token , username = ", token, username);
 
 	try {
 		const decodedToken = await admin.auth().verifyIdToken(token);
+		// const user = await createEmailUser(decodedToken);
 		console.log("decodedToken = ", decodedToken);
 
 		return res.status(200).json({

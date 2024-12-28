@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 const metadata = {
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
 		<html lang="en" className="font-inter">
 			<body>
 				<ThemeProvider>{children}</ThemeProvider>
+				<Toaster />
 			</body>
 		</html>
 	);

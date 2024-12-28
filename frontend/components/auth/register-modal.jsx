@@ -3,7 +3,9 @@
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import { auth, provider } from "@/firebase/index";
+import { ToastAction } from "@/components/ui/toast";
 import { signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import {
 	Eye,
@@ -26,6 +28,7 @@ const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function RegisterModal({ isOpen, onClose }) {
 	const router = useRouter();
+	const { toast } = useToast();
 	const [form, setForm] = useState({
 		username: "",
 		email: "",
@@ -38,6 +41,21 @@ export default function RegisterModal({ isOpen, onClose }) {
 	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
 		useState(false);
 
+	// error toast
+	const errorToast = (error) => {
+		toast({
+			title: "Registration failed!",
+			description: firebaseErrors(error.code),
+			status: "error",
+			duration: 2000,
+			isClosable: true,
+			position: "top",
+			variant: "destructive",
+			action: <ToastAction altText="Try again">Try again</ToastAction>,
+		});
+	};
+
+	// toggle password visibility
 	const togglePassword = (id) => {
 		if (id === "password") {
 			setIsPasswordVisible(!isPasswordVisible);
@@ -46,6 +64,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 		}
 	};
 
+	// render username and email input fields
 	const renderInputFields = (id, type, value, placeholder) => {
 		return (
 			<div>
@@ -80,6 +99,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 		);
 	};
 
+	// render password input fields
 	const renderPasswordField = (id, value, placeholder) => {
 		return (
 			<div>
@@ -111,6 +131,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 					{errors.email && id === "email" && (
 						<WarningCircle size={28} className="text-error-light" />
 					)}
+					{/* password toggle - eye icon */}
 					{id === "password" && (
 						<div
 							className="cursor-pointer transition-all duration-300"
@@ -182,30 +203,35 @@ export default function RegisterModal({ isOpen, onClose }) {
 
 	const handleRegister = async (e) => {
 		e.preventDefault();
-		console.log("form = ", form);
 
-		// try {
-		// 	const data = await createUserWithEmailAndPassword(
-		// 		auth,
-		// 		email,
-		// 		password
-		// 	);
-		// 	console.log("data = ", data);
-		// 	const token = await data.user.getIdToken();
-		// 	console.log("token = ", token);
-		// 	// const res = await axios.post(`${backendURL}/api/auth/register`, {
-		// 	// 	token,
-		// 	// });
-		// 	// if (res.status === 200) {
-		// 	// 	console.log("Registration successful");
-		// 	// 	console.log("res = ", res);
-		// 	// 	router.push("/game");
-		// 	// } else {
-		// 	// 	console.error("Registration failed");
-		// 	// }
-		// } catch (error) {
-		// 	console.error("Registration error: ", error);
-		// }
+		// Check if there are any errors
+		const hasErrors = Object.values(errors).some((error) => error !== null);
+		if (hasErrors) {
+			console.error("Please fix form errors before submitting!");
+			return;
+		}
+
+		try {
+			const data = await createUserWithEmailAndPassword(
+				auth,
+				email,
+				password
+			);
+			const token = await data.user.getIdToken();
+
+			const res = await axios.post(`${backendURL}/api/auth/register`, {
+				token,
+				username,
+			});
+			if (res.status === 200) {
+				localStorage.setItem("token", token);
+				router.push("/game");
+			} else {
+				console.error("Registration failed!");
+			}
+		} catch (error) {
+			errorToast(error);
+		}
 	};
 
 	const handleGoogleRegister = async () => {
@@ -223,7 +249,7 @@ export default function RegisterModal({ isOpen, onClose }) {
 				console.error("Google registration failed!");
 			}
 		} catch (error) {
-			console.error("Google registration error: ", error);
+			errorToast(error);
 		}
 	};
 
@@ -262,8 +288,13 @@ export default function RegisterModal({ isOpen, onClose }) {
 					)}
 				</div>
 
-				<Button type="submit" variant="destructive" size="full">
-					Create Account
+				<Button
+					type="submit"
+					variant="destructive"
+					disabled={isSubmitting}
+					size="full"
+				>
+					{isSubmitting ? "Creating account..." : "Create Account"}
 				</Button>
 
 				{/* Divider */}
