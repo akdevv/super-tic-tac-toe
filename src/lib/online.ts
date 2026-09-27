@@ -3,25 +3,17 @@ import { connectAuthEmulator, getAuth, signInAnonymously } from 'firebase/auth'
 import {
   connectDatabaseEmulator,
   getDatabase,
+  goOffline,
+  goOnline,
   onDisconnect,
   onValue,
   ref,
-  remove,
+  serverTimestamp,
   set,
   update,
 } from 'firebase/database'
-import { newGame, play, type GameState, type Player } from './game.ts'
-
-/** Shape of `games/{id}`. Security rules in database.rules.json enforce turns. */
-export interface OnlineGame {
-  players: { X: string; O?: string }
-  /** Who starts the current round; flips each rematch. */
-  first: Player
-  /** Two digits per move: cell index 0-80 (board * 9 + cell). */
-  moves: string
-  score: { X: number; O: number; draw: number }
-  presence?: Record<string, boolean>
-}
+import type { Player } from './game.ts'
+import { encodeMove, newGameId, type OnlineGame } from './onlineCore.ts'
 
 const env = import.meta.env
 // No Firebase config in dev = use the local emulator (`pnpm emulators`).
@@ -49,7 +41,17 @@ if (emulator) {
   connectDatabaseEmulator(db, '127.0.0.1', 9000)
 }
 
+// The page opens the connection on mount and closes it on leave/idle, so
+// nothing stays connected in the background.
+export const connect = () => goOnline(db)
+export const disconnect = () => goOffline(db)
+
 const gameRef = (id: string, path = '') => ref(db, `games/${id}/${path}`)
+
+let serverOffset = 0
+onValue(ref(db, '.info/serverTimeOffset'), (s) => (serverOffset = s.val() ?? 0))
+/** Current time on the database server (what the rules call `now`). */
+export const serverNow = () => Date.now() + serverOffset
 
 /** Anonymous uid, stable per browser (Firebase persists it). */
 export async function getUid(): Promise<string> {
@@ -58,31 +60,37 @@ export async function getUid(): Promise<string> {
 }
 
 export async function createGame(): Promise<string> {
-  // ponytail: 8 hex chars, create rule rejects the rare collision.
-  const id = crypto.randomUUID().slice(0, 8)
-  await set(gameRef(id), {
-    players: { X: await getUid() },
-    first: 'X',
-    moves: '',
-    score: { X: 0, O: 0, draw: 0 },
-  })
-  return id
+  connect()
+  const uid = await getUid()
+  // Retry on the (astronomically rare) id collision, which the rules reject.
+  for (let attempt = 0; ; attempt++) {
+    const id = newGameId()
+    try {
+      await set(gameRef(id), {
+        players: { X: uid },
+        first: 'X',
+        moves: '',
+        score: { X: 0, O: 0, draw: 0 },
+      })
+      return id
+    } catch (e) {
+      if (attempt >= 2) throw e
+    }
+  }
 }
 
-/** Takes the O seat. Rejects if someone else got it first. */
+/** Takes the O seat. Rejects if it's taken or the host is offline. */
 export async function joinGame(id: string) {
   await set(gameRef(id, 'players/O'), await getUid())
 }
 
-export function watchGame(id: string, cb: (g: OnlineGame | null) => void) {
-  return onValue(gameRef(id), (snap) => cb(snap.val()))
-}
-
-/** Rebuilds the board by replaying moves; throws on an illegal move. */
-export function replay(g: OnlineGame): GameState {
-  return (g.moves.match(/../g) ?? [])
-    .map(Number)
-    .reduce((s, i) => play(s, Math.floor(i / 9), i % 9), newGame(g.first))
+/** Calls `onDenied` when the game becomes unreadable (full, you're not in it). */
+export function watchGame(
+  id: string,
+  cb: (g: OnlineGame | null) => void,
+  onDenied: () => void,
+) {
+  return onValue(gameRef(id), (snap) => cb(snap.val()), onDenied)
 }
 
 export function sendMove(
@@ -91,10 +99,7 @@ export function sendMove(
   board: number,
   cell: number,
 ) {
-  return set(
-    gameRef(id, 'moves'),
-    g.moves + String(board * 9 + cell).padStart(2, '0'),
-  )
+  return set(gameRef(id, 'moves'), g.moves + encodeMove(board, cell))
 }
 
 /** Records the result and starts a new round with the other starter. */
@@ -102,22 +107,24 @@ export function rematch(id: string, g: OnlineGame, winner: Player | 'draw') {
   return update(gameRef(id), {
     moves: '',
     first: g.first === 'X' ? 'O' : 'X',
+    forfeit: null,
     [`score/${winner}`]: g.score[winner] + 1,
   })
 }
 
-/** Marks `uid` online in this game until disconnect or cleanup. */
+/** Ends the game with `loser` losing: resigning, or claiming a disconnect. */
+export function forfeit(id: string, loser: Player) {
+  return set(gameRef(id, 'forfeit'), loser)
+}
+
+/** Marks `uid` online; the server records the time if the connection drops. */
 export function trackPresence(id: string, uid: string) {
   const me = gameRef(id, `presence/${uid}`)
-  const unsub = onValue(ref(db, '.info/connected'), (snap) => {
+  return onValue(ref(db, '.info/connected'), (snap) => {
     // Re-register on every reconnect; onDisconnect runs server-side.
     if (snap.val())
       onDisconnect(me)
-        .remove()
+        .set(serverTimestamp())
         .then(() => set(me, true))
   })
-  return () => {
-    unsub()
-    remove(me)
-  }
 }

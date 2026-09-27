@@ -4,6 +4,7 @@ import {
   canPlay,
   newGame,
   play,
+  replay,
   type GameState,
   type Player,
   type Result,
@@ -92,4 +93,52 @@ test('play does not mutate the previous state', () => {
   const s = newGame()
   play(s, 0, 0)
   assert.deepEqual(s, newGame())
+})
+
+test('rejects out-of-range and non-integer indices', () => {
+  const s = play(newGame(), 4, 0) // O forced to board 0
+  // cell 9 of board 0 would alias board 1, cell 0
+  for (const [b, c] of [
+    [0, 9],
+    [0, -1],
+    [-1, 0],
+    [9, 0],
+    [0, 0.5],
+    [0.5, 0],
+    [0, NaN],
+  ]) {
+    assert.equal(canPlay(s, b, c), false, `${b},${c}`)
+    assert.throws(() => play(s, b, c))
+  }
+})
+
+test('replay rebuilds the same state as playing moves', () => {
+  const direct = play(play(play(newGame('O'), 4, 0), 0, 8), 8, 4)
+  assert.deepEqual(replay('O', [36, 8, 76]), direct)
+})
+
+test('replay: an illegal move loses the game for its maker', () => {
+  // X plays board 4 cell 0 (O must play board 0), O plays board 5 instead.
+  assert.equal(replay('X', [36, 45]).winner, 'X')
+  assert.equal(replay('X', [36, 36]).winner, 'X') // occupied
+  assert.equal(replay('X', [81]).winner, 'O') // out of range
+  assert.equal(replay('X', [-1]).winner, 'O')
+  assert.equal(replay('X', [1.5]).winner, 'O')
+})
+
+test('replay ignores moves after the game ends', () => {
+  // Random legal game to completion.
+  const moves: number[] = []
+  let s = newGame()
+  while (!s.winner) {
+    const legal = [...Array(81).keys()].filter((i) =>
+      canPlay(s, Math.floor(i / 9), i % 9),
+    )
+    const i = legal[Math.floor(Math.random() * legal.length)]
+    s = play(s, Math.floor(i / 9), i % 9)
+    moves.push(i)
+  }
+  assert.deepEqual(replay('X', moves), s)
+  const junk = [...Array(81).keys()] // would be illegal if applied
+  assert.deepEqual(replay('X', [...moves, ...junk]), s)
 })

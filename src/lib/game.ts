@@ -43,8 +43,14 @@ export function newGame(first: Player = 'X'): GameState {
   }
 }
 
+export const other = (p: Player): Player => (p === 'X' ? 'O' : 'X')
+
+const inRange = (n: number) => Number.isInteger(n) && n >= 0 && n < 9
+
 export function canPlay(s: GameState, board: number, cell: number): boolean {
   return (
+    inRange(board) &&
+    inRange(cell) &&
     s.winner === null &&
     s.boards[board] === null &&
     (s.activeBoard === null || s.activeBoard === board) &&
@@ -65,11 +71,27 @@ export function play(s: GameState, board: number, cell: number): GameState {
   return {
     cells,
     boards,
-    turn: s.turn === 'X' ? 'O' : 'X',
+    turn: other(s.turn),
     // Sent to a closed (won or full) board = play anywhere.
     activeBoard: boards[cell] === null ? cell : null,
     // Drawn small boards count for nobody; all decided with no line = draw.
     winner:
       lineWinner(boards) ?? (boards.every((b) => b !== null) ? 'draw' : null),
   }
+}
+
+/**
+ * Rebuilds a game from cell indices (board * 9 + cell). An illegal move
+ * loses the game for whoever made it; moves after the game ends are ignored.
+ */
+export function replay(first: Player, moves: number[]): GameState {
+  let s = newGame(first)
+  for (const i of moves) {
+    if (s.winner) break
+    const board = Math.floor(i / 9)
+    const cell = i - board * 9
+    if (!canPlay(s, board, cell)) return { ...s, winner: other(s.turn) }
+    s = play(s, board, cell)
+  }
+  return s
 }
