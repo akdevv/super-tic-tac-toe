@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { canPlay, newGame, play } from '../lib/game.ts'
-
-const range9 = [...Array(9).keys()]
+import Board from '../components/Board.tsx'
+import { newGame, play } from '../lib/game.ts'
 
 export default function Game() {
   // ponytail: full state history — undo is just pop, 82 states max.
@@ -38,37 +37,7 @@ export default function Game() {
       </p>
       <p className="text-xl font-bold">{status}</p>
 
-      <div className="grid grid-cols-3 gap-2">
-        {range9.map((b) => {
-          const result = s.boards[b]
-          const playable = !s.winner && !result && (s.activeBoard ?? b) === b
-          return (
-            <div
-              key={b}
-              className={`relative grid grid-cols-3 gap-0.5 p-1 ${playable ? 'bg-yellow-200' : 'bg-gray-300'}`}
-            >
-              {range9.map((c) => (
-                <button
-                  key={c}
-                  aria-label={`Board ${b + 1}, cell ${c + 1}`}
-                  disabled={!canPlay(s, b, c)}
-                  onClick={() => move(b, c)}
-                  className={`size-8 bg-white font-bold sm:size-10 ${s.cells[b * 9 + c] === 'X' ? 'text-red-600' : 'text-blue-600'} enabled:hover:bg-yellow-100`}
-                >
-                  {s.cells[b * 9 + c]}
-                </button>
-              ))}
-              {result && (
-                <div
-                  className={`absolute inset-0 flex items-center justify-center bg-white/80 text-6xl font-bold ${result === 'X' ? 'text-red-600' : result === 'O' ? 'text-blue-600' : 'text-gray-500'}`}
-                >
-                  {result === 'draw' ? '–' : result}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+      <Board state={s} onPlay={move} />
 
       <div className="flex gap-4">
         <button

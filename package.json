@@ -10,9 +10,12 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --test \"src/**/*.test.ts\""
+    "test": "node --test \"src/**/*.test.ts\"",
+    "emulators": "pnpm dlx firebase-tools@15 emulators:start --only auth,database --project demo-sttt",
+    "test:rules": "node --test --test-force-exit test/rules.test.ts"
   },
   "dependencies": {
+    "firebase": "^12.19.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router": "^8.4.0"

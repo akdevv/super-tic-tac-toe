@@ -17,5 +17,10 @@ export default tseslint.config(
     ],
     languageOptions: { globals: globals.browser },
   },
+  {
+    // Entry file, not a hot-reloaded module.
+    files: ['src/main.tsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
   prettier,
 )
