@@ -8,7 +8,7 @@ import {
   type GameState,
   type Player,
   type Result,
-} from './game.ts'
+} from '../../../src/game/engine.ts'
 
 /** Fresh game with the first small-board results set, rest open. */
 function withBoards(results: Result[]): GameState {

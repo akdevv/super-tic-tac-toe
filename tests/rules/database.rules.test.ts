@@ -15,7 +15,7 @@ import {
   update,
   type Database,
 } from 'firebase/database'
-import { newGameId } from '../src/lib/onlineCore.ts'
+import { newGameId } from '../../src/online/core.ts'
 
 const DB_URL = 'http://127.0.0.1:9000?ns=demo-sttt-default-rtdb'
 

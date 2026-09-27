@@ -4,6 +4,29 @@ Nine tic-tac-toe boards in one. Play locally on one screen, or online with a fri
 
 Stack: Vite + React + TypeScript + Tailwind, Firebase Realtime Database for online play, hosted on Vercel. No backend server.
 
+## Project structure
+
+```
+src/
+  main.tsx              entry + routes
+  pages/                one component per route: Landing, Game (local/bot), OnlineGame
+  components/           shared UI (Board)
+  game/                 pure game logic, no React or Firebase
+    engine.ts           rules: newGame, canPlay, play, replay
+    bot.ts              MCTS bot; bot.worker.ts runs it off the main thread
+    localGame.ts        local/bot game reducer + saving to browser storage
+  online/
+    core.ts             pure online helpers: game ids, stored game shape, state
+    firebase.ts         Firebase connection, auth, reads/writes
+tests/
+  unit/                 mirrors src/, runs with `pnpm test`
+  rules/                database.rules.json tests, need the emulator
+database.rules.json     Firebase security rules (turns, seats, forfeits)
+old-code/               previous Next.js/Express version, reference only
+```
+
+Anything in `game/` and `online/core.ts` stays free of browser and Firebase APIs so it runs in Node tests directly.
+
 ## Development
 
 ```sh

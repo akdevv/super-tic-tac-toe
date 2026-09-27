@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
 import Board from '../components/Board.tsx'
-import { canPlay, other } from '../lib/game.ts'
+import { canPlay, other } from '../game/engine.ts'
 import {
   connect,
   disconnect,
@@ -13,7 +13,7 @@ import {
   serverNow,
   trackPresence,
   watchGame,
-} from '../lib/online.ts'
+} from '../online/firebase.ts'
 import {
   FORFEIT_AFTER,
   IDLE_TIMEOUT,
@@ -21,7 +21,7 @@ import {
   onlineState,
   seatOf,
   type OnlineGame as Game,
-} from '../lib/onlineCore.ts'
+} from '../online/core.ts'
 
 function Page({ children }: { children: ReactNode }) {
   return (

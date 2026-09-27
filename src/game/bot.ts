@@ -1,4 +1,4 @@
-import { canPlay, other, play, type GameState, type Result } from './game.ts'
+import { canPlay, other, play, type GameState, type Result } from './engine.ts'
 
 export type Move = [board: number, cell: number]
 

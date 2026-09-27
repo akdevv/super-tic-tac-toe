@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { bestMove, legalMoves } from './bot.ts'
-import { canPlay, newGame, play, type GameState, type Player } from './game.ts'
+import { bestMove, legalMoves } from '../../../src/game/bot.ts'
+import {
+  canPlay,
+  newGame,
+  play,
+  type GameState,
+  type Player,
+} from '../../../src/game/engine.ts'
 
 function withCells(s: GameState, board: number, marks: (Player | null)[]) {
   const cells = s.cells.slice()

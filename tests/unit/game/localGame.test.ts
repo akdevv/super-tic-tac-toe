@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { canPlay, newGame, play, type Player } from './game.ts'
+import {
+  canPlay,
+  newGame,
+  play,
+  type Player,
+} from '../../../src/game/engine.ts'
 import {
   canUndo,
   GAME_TTL,
@@ -12,7 +17,7 @@ import {
   stateOf,
   type Action,
   type LocalGame,
-} from './localGame.ts'
+} from '../../../src/game/localGame.ts'
 
 const fresh = (bot: Player | null = null): LocalGame => ({
   bot,

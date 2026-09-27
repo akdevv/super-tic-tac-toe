@@ -12,8 +12,8 @@ import {
   set,
   update,
 } from 'firebase/database'
-import type { Player } from './game.ts'
-import { encodeMove, newGameId, type OnlineGame } from './onlineCore.ts'
+import type { Player } from '../game/engine.ts'
+import { encodeMove, newGameId, type OnlineGame } from './core.ts'
 
 const env = import.meta.env
 // No Firebase config in dev = use the local emulator (`pnpm emulators`).

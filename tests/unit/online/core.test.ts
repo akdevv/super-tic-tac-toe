@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { newGame, play } from './game.ts'
+import { newGame, play } from '../../../src/game/engine.ts'
 import {
   decodeMoves,
   encodeMove,
@@ -9,7 +9,7 @@ import {
   onlineState,
   seatOf,
   type OnlineGame,
-} from './onlineCore.ts'
+} from '../../../src/online/core.ts'
 
 test('ids are 10 alphanumeric chars and valid', () => {
   for (let i = 0; i < 1000; i++) {

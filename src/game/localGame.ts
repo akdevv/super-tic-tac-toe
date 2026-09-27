@@ -6,7 +6,7 @@ import {
   replay,
   type GameState,
   type Player,
-} from './game.ts'
+} from './engine.ts'
 
 /** Local 2-player uses X/O/draw; vs bot uses you/bot/draw. */
 export type Score = Record<string, number>

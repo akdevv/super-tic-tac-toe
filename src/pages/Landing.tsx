@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { LEVELS, type Level } from '../lib/bot.ts'
-import type { Player } from '../lib/game.ts'
+import { LEVELS, type Level } from '../game/bot.ts'
+import type { Player } from '../game/engine.ts'
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -14,7 +14,7 @@ export default function Landing() {
     setCreating(true)
     setError(false)
     try {
-      const { createGame } = await import('../lib/online.ts')
+      const { createGame } = await import('../online/firebase.ts')
       navigate(`/game/${await createGame()}`)
     } catch (e) {
       console.error(e)

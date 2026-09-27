@@ -10,9 +10,9 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --test \"src/**/*.test.ts\"",
+    "test": "node --test \"tests/unit/**/*.test.ts\"",
     "emulators": "pnpm dlx firebase-tools@15 emulators:start --only auth,database --project demo-sttt",
-    "test:rules": "node --test --test-force-exit test/rules.test.ts"
+    "test:rules": "node --test --test-force-exit tests/rules/*.test.ts"
   },
   "dependencies": {
     "firebase": "^12.19.0",

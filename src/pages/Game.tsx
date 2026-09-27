@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useReducer } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import Board from '../components/Board.tsx'
-import { LEVELS, type Level, type Move } from '../lib/bot.ts'
-import { other, type Player } from '../lib/game.ts'
+import { LEVELS, type Level, type Move } from '../game/bot.ts'
+import { other, type Player } from '../game/engine.ts'
 import {
   canUndo,
   loadGame,
@@ -11,7 +11,7 @@ import {
   saveGame,
   saveScore,
   stateOf,
-} from '../lib/localGame.ts'
+} from '../game/localGame.ts'
 
 // Even touching sessionStorage/localStorage can throw when storage is blocked.
 const noStore = { getItem: () => null, setItem() {}, removeItem() {} }
@@ -71,7 +71,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
   useEffect(() => {
     if (!botThinking || !level) return
     const worker = new Worker(
-      new URL('../lib/bot.worker.ts', import.meta.url),
+      new URL('../game/bot.worker.ts', import.meta.url),
       { type: 'module' },
     )
     worker.onmessage = (e: MessageEvent<Move>) =>

@@ -1,4 +1,4 @@
-import { canPlay, type GameState } from '../lib/game.ts'
+import { canPlay, type GameState } from '../game/engine.ts'
 
 const range9 = [...Array(9).keys()]
 

@@ -1,4 +1,4 @@
-import { other, replay, type GameState, type Player } from './game.ts'
+import { other, replay, type GameState, type Player } from '../game/engine.ts'
 
 const ALPHABET =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'

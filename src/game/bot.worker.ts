@@ -1,5 +1,5 @@
 import { bestMove } from './bot.ts'
-import type { GameState } from './game.ts'
+import type { GameState } from './engine.ts'
 
 // Runs the search off the main thread so the page stays responsive.
 onmessage = (e: MessageEvent<{ state: GameState; ms: number }>) => {
