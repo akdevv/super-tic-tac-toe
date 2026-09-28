@@ -23,11 +23,10 @@ export default function Device({
   ledLabel?: string
   glow?: 'start'
 }) {
+  const heading = title ? `${title} · Super Tic-Tac-Toe` : 'Super Tic-Tac-Toe'
   useEffect(() => {
-    document.title = title
-      ? `${title} · Super Tic-Tac-Toe`
-      : 'Super Tic-Tac-Toe'
-  }, [title])
+    document.title = heading
+  }, [heading])
 
   const [pressed, setPressed] = useState<PadKey | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -50,6 +49,7 @@ export default function Device({
 
   return (
     <main className="land:p-2 sm:short:py-4 flex min-h-dvh flex-col items-center justify-center gap-5 px-3 py-4 sm:p-8">
+      <h1 className="sr-only">{heading}</h1>
       <div className="shell console-grid land:w-auto land:max-w-none land:rounded-[30px] land:px-6 land:py-4 short:pt-3 short:pb-5 tiny:pb-3 relative w-full rounded-[20px_20px_72px_20px] px-4 pt-4 pb-8 sm:px-6 sm:pt-6 sm:pb-10">
         <div
           style={{ gridArea: 'screen' }}

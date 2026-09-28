@@ -3,7 +3,7 @@
     "games": {
       "$id": {
         ".read": "auth != null && (!data.child('players/O').exists() || data.child('players/X').val() == auth.uid || data.child('players/O').val() == auth.uid)",
-        ".write": "auth != null && !data.exists() && $id.matches(/^[A-Za-z0-9]{10}$/) && newData.child('players/X').val() == auth.uid && !newData.child('players/O').exists() && newData.child('first').val() == 'X' && newData.child('moves').val() == '' && !newData.child('forfeit').exists() && !newData.child('presence').exists()",
+        ".write": "(auth != null && !data.exists() && $id.matches(/^[A-Za-z0-9]{10}$/) && newData.child('players/X').val() == auth.uid && !newData.child('players/O').exists() && newData.child('first').val() == 'X' && newData.child('moves').val() == '' && !newData.child('forfeit').exists() && !newData.child('presence').exists()) || (auth != null && !newData.exists() && ((data.child('players/X').val() == auth.uid && (!data.child('players/O').exists() || data.child('presence').child(data.child('players/O').val()).isNumber())) || (data.child('players/O').val() == auth.uid && data.child('presence').child(data.child('players/X').val()).isNumber())))",
         ".validate": "newData.hasChildren(['players', 'first', 'moves', 'score'])",
         "players": {
           "X": {

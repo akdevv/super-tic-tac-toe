@@ -1,4 +1,4 @@
-// public/favicon.svg and the PNG icons are this art; keep them in sync.
+// scripts/icons.swift draws this art for public/ (`pnpm icons`); keep them in sync.
 
 const X = ['#...#', '.#.#.', '..#..', '.#.#.', '#...#']
 const O = ['.###.', '#...#', '#...#', '#...#', '.###.']
@@ -72,12 +72,15 @@ export function LogoLockup() {
   return (
     <div className="land:gap-2 flex flex-col items-center gap-2.5 text-center @max-[18rem]:gap-1.5">
       <LogoMark className="land:hidden size-10 sm:size-14 @max-[18rem]:size-8 @max-[14rem]:hidden" />
-      <h1 className="flex flex-col items-center gap-1.5 leading-none">
+      <p
+        aria-hidden="true"
+        className="flex flex-col items-center gap-1.5 leading-none"
+      >
         <span className="text-lcd-2 text-[10px] tracking-[0.5em] sm:text-xs">
           SUPER
         </span>
         <span className="text-base sm:text-lg">TIC·TAC·TOE</span>
-      </h1>
+      </p>
     </div>
   )
 }

@@ -1,20 +1,25 @@
 {
   "name": "super-tic-tac-toe",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.27.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "lint": "eslint .",
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "node --test \"tests/unit/**/*.test.ts\"",
     "emulators": "pnpm dlx firebase-tools@15 emulators:start --only auth,database --project demo-sttt",
-    "test:rules": "node --test --test-force-exit tests/rules/*.test.ts"
+    "test:rules": "node --test --test-force-exit tests/rules/*.test.ts",
+    "test:e2e": "playwright test",
+    "icons": "swift scripts/icons.swift"
   },
   "dependencies": {
+    "@fontsource/press-start-2p": "^5.3.0",
+    "@fontsource/saira": "^5.3.0",
     "firebase": "^12.19.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -22,7 +27,9 @@
     "web-haptics": "^0.0.6"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
@@ -38,6 +45,8 @@
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.70.1",
-    "vite": "^8.3.0"
-  }
+    "vite": "^8.3.0",
+    "vite-plugin-pwa": "^1.3.0"
+  },
+  "license": "MIT"
 }

@@ -117,6 +117,10 @@ export default function Board({
           </div>
         )
       })}
+      <p className="sr-only" aria-live="polite">
+        {last !== undefined &&
+          `${s.cells[last]} played board ${Math.floor(last / 9) + 1}, cell ${(last % 9) + 1}`}
+      </p>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 import { connectAuthEmulator, getAuth, signInAnonymously } from 'firebase/auth'
 import {
   connectDatabaseEmulator,
@@ -8,6 +9,7 @@ import {
   onDisconnect,
   onValue,
   ref,
+  remove,
   serverTimestamp,
   set,
   update,
@@ -34,6 +36,12 @@ const app = initializeApp(
         appId: env.VITE_FIREBASE_APP_ID,
       },
 )
+if (!emulator && env.VITE_FIREBASE_APPCHECK_KEY) {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(env.VITE_FIREBASE_APPCHECK_KEY),
+    isTokenAutoRefreshEnabled: true,
+  })
+}
 const auth = getAuth(app)
 const db = getDatabase(app)
 if (emulator) {
@@ -41,8 +49,14 @@ if (emulator) {
   connectDatabaseEmulator(db, '127.0.0.1', 9000)
 }
 
-export const connect = () => goOnline(db)
-export const disconnect = () => goOffline(db)
+// Ref-counted so a leaving page's cleanup write can finish after the page closes its connection.
+let users = 0
+export function connect() {
+  if (users++ === 0) goOnline(db)
+}
+export function disconnect() {
+  if (--users === 0) goOffline(db)
+}
 
 const gameRef = (id: string, path = '') => ref(db, `games/${id}/${path}`)
 
@@ -58,21 +72,25 @@ export async function getUid(): Promise<string> {
 
 export async function createGame(): Promise<string> {
   connect()
-  const uid = await getUid()
-  // Retry on the (astronomically rare) id collision, which the rules reject.
-  for (let attempt = 0; ; attempt++) {
-    const id = newGameId()
-    try {
-      await set(gameRef(id), {
-        players: { X: uid },
-        first: 'X',
-        moves: '',
-        score: { X: 0, O: 0, draw: 0 },
-      })
-      return id
-    } catch (e) {
-      if (attempt >= 2) throw e
+  try {
+    const uid = await getUid()
+    // Retry on the (astronomically rare) id collision, which the rules reject.
+    for (let attempt = 0; ; attempt++) {
+      const id = newGameId()
+      try {
+        await set(gameRef(id), {
+          players: { X: uid },
+          first: 'X',
+          moves: '',
+          score: { X: 0, O: 0, draw: 0 },
+        })
+        return id
+      } catch (e) {
+        if (attempt >= 2) throw e
+      }
     }
+  } finally {
+    disconnect()
   }
 }
 
@@ -121,4 +139,20 @@ export function trackPresence(id: string, uid: string) {
         .set(serverTimestamp())
         .then(() => set(me, true))
   })
+}
+
+/**
+ * Deletes the game if you're the last one in it; the rules reject this while
+ * your opponent is still connected, which is harmless.
+ */
+export async function leaveGame(id: string, uid: string) {
+  connect()
+  try {
+    await remove(gameRef(id))
+    await onDisconnect(gameRef(id, `presence/${uid}`)).cancel()
+  } catch {
+    // opponent still here: the game stays
+  } finally {
+    disconnect()
+  }
 }

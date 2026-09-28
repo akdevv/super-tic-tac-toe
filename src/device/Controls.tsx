@@ -79,7 +79,7 @@ export function FaceButtons({
       <span className="font-case text-ink-dim mt-2.5 text-[13px] leading-none font-extrabold italic">
         {k.toUpperCase()}
       </span>
-      <span className="font-case text-ink-dim/75 mt-1 min-h-3 text-[9px] leading-none font-semibold tracking-[0.06em] whitespace-nowrap italic">
+      <span className="font-case text-ink-dim mt-1 min-h-3 text-[9px] leading-none font-semibold tracking-[0.06em] whitespace-nowrap italic">
         {labels?.[k] ?? ''}
       </span>
     </div>
@@ -130,7 +130,7 @@ export function PillKey({
         <span className="text-ink-dim text-[10px] font-extrabold tracking-widest">
           {name}
         </span>
-        <span className="text-ink-dim/70 min-h-2.5 text-[8px] font-semibold tracking-[0.06em]">
+        <span className="text-ink-dim min-h-2.5 text-[8px] font-semibold tracking-[0.06em]">
           {label && label !== name ? label : ''}
         </span>
       </span>

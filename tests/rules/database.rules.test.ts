@@ -78,7 +78,7 @@ test('create: valid id, own seat, clean initial state', async () => {
   const id = newGameId()
   await ok(set(g(host.db, id), base))
   await denied(set(g(host.db, id), base)) // no overwrite
-  await denied(set(g(host.db, id), null)) // no delete
+  await denied(set(g(other.db, id), null)) // not yours to delete
   assert.equal((await get(ref(host.db, `games/${id}/moves`))).val(), '')
 })
 
@@ -177,6 +177,25 @@ test('forfeit: resign any time, claim only after opponent is gone 60s', async ()
   await ok(set(at(guest, `presence/${guest.uid}`), true))
   await denied(set(at(host, 'forfeit'), 'O'))
   await ok(set(at(host, 'forfeit'), 'X'))
+})
+
+test('delete: only the last player left in the game', async () => {
+  const [host, other] = [await freshUser(), await freshUser()]
+  const lobby = newGameId()
+  const g = (u: User, id: string) => ref(u.db, `games/${id}`)
+  await ok(set(g(host, lobby), newGame(host.uid)))
+  await denied(set(g(other, lobby), null))
+  await ok(set(g(host, lobby), null)) // nobody joined
+
+  const { id, host: x, guest: o, at } = await startGame()
+  const spectator = await freshUser()
+  await ok(set(at(o, `presence/${o.uid}`), true))
+  await denied(set(at(x), null)) // guest still here
+  await denied(set(at(o), null)) // host still here
+  await ok(set(at(o, `presence/${o.uid}`), Date.now()))
+  await denied(set(at(spectator), null))
+  await ok(set(at(x), null)) // guest gone
+  assert.equal((await get(g(x, id))).val(), null)
 })
 
 test('disconnect sets a server timestamp via onDisconnect', async () => {

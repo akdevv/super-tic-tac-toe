@@ -26,6 +26,7 @@ import {
   forfeit,
   getUid,
   joinGame,
+  leaveGame,
   rematch,
   sendMove,
   serverNow,
@@ -55,6 +56,8 @@ function Message({ title, children }: { title: string; children?: ReactNode }) {
     </Device>
   )
 }
+
+let pendingLeave: ReturnType<typeof setTimeout> | undefined
 
 async function shareLink(onCopied: () => void) {
   const url = location.href
@@ -120,6 +123,18 @@ export default function OnlineGame() {
   useEffect(() => {
     if (seat && uid && !idle) return trackPresence(id, uid)
   }, [seat, id, uid, idle])
+
+  useEffect(() => {
+    if (!seat || !uid) return
+    clearTimeout(pendingLeave)
+    const leave = () => leaveGame(id, uid)
+    window.addEventListener('pagehide', leave)
+    return () => {
+      window.removeEventListener('pagehide', leave)
+      // Deferred so StrictMode's dev remount can cancel it.
+      pendingLeave = setTimeout(leave, 0)
+    }
+  }, [seat, uid, id])
 
   // Opponent gone for FORFEIT_AFTER: claim the win (the rules verify the time).
   useEffect(() => {
@@ -197,7 +212,9 @@ export default function OnlineGame() {
     )
   if (game === undefined || !uid || !s) return <Message title="LOADING…" />
   if (game === null)
-    return <Message title="GAME NOT FOUND">THE LINK MAY BE WRONG.</Message>
+    return (
+      <Message title="GAME NOT FOUND">IT ENDED, OR THE LINK IS WRONG.</Message>
+    )
 
   if (!game.players.O) {
     if (!seat)

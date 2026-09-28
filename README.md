@@ -1,107 +1,91 @@
 # Super Tic-Tac-Toe
 
-Nine tic-tac-toe boards in one. Play locally on one screen, or online with a friend via a share link.
+[![CI](https://github.com/akdevv/super-tic-tac-toe/actions/workflows/ci.yml/badge.svg)](https://github.com/akdevv/super-tic-tac-toe/actions/workflows/ci.yml)
 
-Stack: Vite + React + TypeScript + Tailwind, Firebase Realtime Database for online play, hosted on Vercel. No backend server.
+![Super Tic-Tac-Toe](public/og-image.png)
 
-## Controls
+Nine games of tic-tac-toe on one board, styled like an old handheld console. Play on one screen, against the CPU, or online through a link.
 
-The app is a handheld console: tap the board directly, or use the on-screen keys / keyboard.
+**Play: [super-tic-tac-toe-gamma.vercel.app](https://super-tic-tac-toe-gamma.vercel.app)**
 
-Sound effects are synthesized in the browser (Web Audio). On phones, taps also vibrate via [web-haptics](https://github.com/lochie/web-haptics). Both can be switched off under SETTINGS.
+## How to play
 
-| Key    | Keyboard      | In game                        | In menus |
-| ------ | ------------- | ------------------------------ | -------- |
-| D-pad  | Arrow keys    | Move the cursor                | Move     |
-| A      | Enter / Space | Place mark · play again        | Select   |
-| B      | Backspace     | Undo · show board after a game | Back     |
-| START  | Esc           | Pause menu                     | –        |
-| SELECT | H / ?         | How to play                    | –        |
-| Sound  | M             | Mute / unmute (also in menus)  | –        |
+- Win three small boards in a row to win the game.
+- The cell you pick sends your opponent to the matching board.
+- Three in a row wins a small board. A full board with no line counts for nobody.
+- Sent to a closed board? Play in any open one.
+
+## Features
+
+- CPU with three levels, using Monte Carlo tree search in a web worker.
+- Online play with no account. Database rules check every turn, so nobody can cheat.
+- Installable, and local and CPU games work offline.
+- Chiptune sounds, phone vibration, keyboard and screen reader support.
+
+| Key    | Keyboard      | Does          |
+| ------ | ------------- | ------------- |
+| D-pad  | Arrow keys    | Move          |
+| A      | Enter / Space | Place, select |
+| B      | Backspace     | Undo, back    |
+| START  | Esc           | Pause         |
+| SELECT | H             | How to play   |
+|        | M             | Mute          |
+
+## Development
+
+Needs Node 24, pnpm 10, and Java 21+ for the Firebase emulator.
+
+```sh
+pnpm install
+pnpm emulators   # terminal 1
+pnpm dev         # terminal 2
+```
+
+With no Firebase config, dev uses the local emulator. Open an invite link in an incognito window to play yourself online.
+
+| Script            | Does                                             |
+| ----------------- | ------------------------------------------------ |
+| `pnpm build`      | Type-check and build                             |
+| `pnpm test`       | Unit tests                                       |
+| `pnpm test:rules` | Database rules tests (emulator running)          |
+| `pnpm test:e2e`   | Playwright: games, menus, offline, accessibility |
+| `pnpm lint`       | ESLint                                           |
+| `pnpm format`     | Prettier                                         |
+| `pnpm icons`      | Redraw favicon, app icons, OG image (macOS)      |
+
+CI runs lint, format, all three test suites and the build on every push.
+
+## How online play works
+
+Games live at `games/{id}` in Firebase Realtime Database, and the link is the only way in. Players sign in anonymously. The rules in `database.rules.json` enforce seats, turn order, rematch scores and the 60-second disconnect forfeit. When the last player leaves, their browser deletes the game.
+
+## Deploying
+
+1. Create a Firebase project with Realtime Database (locked mode), Anonymous sign-in and a Web app.
+2. Copy `.env.example` to `.env.local` and fill in the web app config.
+3. Deploy the rules, and again whenever `database.rules.json` changes:
+   ```sh
+   pnpm dlx firebase-tools deploy --only database --project <project-id>
+   ```
+4. Import the repo on Vercel and add the same env vars. `vercel.json` handles routing and security headers.
+
+**Optional App Check:** create a reCAPTCHA v3 key, add its secret in Firebase App Check, and set `VITE_FIREBASE_APPCHECK_KEY` to the site key. Enforce it only after the live site shows verified traffic.
 
 ## Project structure
 
 ```
 src/
-  main.tsx              entry + routes
-  pages/                one component per route: Landing, Game (local/bot), OnlineGame
-  device/               handheld console shell, controls, keyboard -> pad mapping
-  screen/               what's drawn on the LCD: Board, sprites, logo, HUD, overlays
-  menus/                D-pad menus, settings/about/rules screens and their hooks
-  feedback/             sound effects (Web Audio), haptics, on/off settings
-  game/                 pure game logic, no React or Firebase
-    engine.ts           rules: newGame, canPlay, play, replay
-    bot.ts              MCTS bot; bot.worker.ts runs it off the main thread
-    cursor.ts           keyboard / D-pad cursor over the 9x9 grid
-    localGame.ts        local/bot game reducer + saving to browser storage
-  online/
-    core.ts             pure online helpers: game ids, stored game shape, state
-    firebase.ts         Firebase connection, auth, reads/writes
-tests/
-  unit/                 mirrors src/, runs with `pnpm test`
-  rules/                database.rules.json tests, need the emulator
-database.rules.json     Firebase security rules (turns, seats, forfeits)
+  pages/      routes
+  device/     console shell and keys
+  screen/     board, sprites, logo, overlays
+  menus/      menus and their screens
+  feedback/   sound and vibration
+  game/       game rules and CPU, no React
+  online/     Firebase
+tests/        unit, rules, e2e
+scripts/      logo asset generator
 ```
 
-Anything in `game/` and `online/core.ts` stays free of browser and Firebase APIs so it runs in Node tests directly.
+## Credits
 
-## Development
-
-```sh
-pnpm install
-pnpm emulators   # local Firebase (auth + database), needs Java 21+
-pnpm dev         # in a second terminal
-```
-
-With no Firebase config in `.env.local`, dev mode talks to the local emulator, so no Firebase account is needed. To play online against yourself, open the invite link in an incognito window.
-
-If your default Java is older than 21 (macOS + Homebrew):
-
-```sh
-JAVA_HOME=$(/usr/libexec/java_home -v 26) pnpm emulators
-```
-
-| Script            | What it does                                             |
-| ----------------- | -------------------------------------------------------- |
-| `pnpm test`       | Game rules tests                                         |
-| `pnpm test:rules` | Database security rules tests (emulator must be running) |
-| `pnpm lint`       | ESLint                                                   |
-| `pnpm format`     | Prettier                                                 |
-| `pnpm build`      | Type-check and production build                          |
-
-## Firebase setup (one time, for production)
-
-1. Go to https://console.firebase.google.com and **create a project**. Google Analytics is not needed.
-2. **Realtime Database:** Build → Realtime Database → Create database. Pick a location close to your players and start in **locked mode**. The real rules get deployed in step 6.
-3. **Anonymous sign-in:** Build → Authentication → Get started → Sign-in method → **Anonymous** → Enable.
-4. **Web app config:** Project settings (gear icon) → General → Your apps → add a **Web** app (no hosting needed). Copy the config values.
-5. **Env file:** copy `.env.example` to `.env.local` and fill it in:
-
-   | Variable                     | From the config |
-   | ---------------------------- | --------------- |
-   | `VITE_FIREBASE_API_KEY`      | `apiKey`        |
-   | `VITE_FIREBASE_AUTH_DOMAIN`  | `authDomain`    |
-   | `VITE_FIREBASE_DATABASE_URL` | `databaseURL`   |
-   | `VITE_FIREBASE_PROJECT_ID`   | `projectId`     |
-   | `VITE_FIREBASE_APP_ID`       | `appId`         |
-
-   If `databaseURL` is missing from the config, copy it from the top of the Realtime Database page.
-
-6. **Deploy the security rules** (`database.rules.json`):
-
-   ```sh
-   pnpm dlx firebase-tools login
-   pnpm dlx firebase-tools deploy --only database --project <your-project-id>
-   ```
-
-   Run step 6 again whenever `database.rules.json` changes.
-
-Once `.env.local` is filled in, `pnpm dev` uses the real project instead of the emulator. These web config values are public by design; the security rules are what protect the data.
-
-## Deploy to Vercel
-
-1. Import the repo on https://vercel.com. It detects Vite automatically (build: `pnpm build`, output: `dist`).
-2. Settings → Environment Variables: add the same five `VITE_FIREBASE_*` values.
-3. Deploy. `vercel.json` routes every path to the app, so invite links like `/game/abc123` work on reload.
-
-If online games fail on the deployed site with an auth error, add your Vercel domain under Firebase → Authentication → Settings → Authorized domains.
+Fonts: [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) and [Saira](https://fonts.google.com/specimen/Saira) (OFL). Vibration: [web-haptics](https://github.com/lochie/web-haptics). Made by [akdevv](https://github.com/akdevv). [MIT](LICENSE) licensed.
