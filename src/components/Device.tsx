@@ -94,12 +94,12 @@ export default function Device({
   })
 
   return (
-    <main className="land:p-2 flex min-h-dvh flex-col items-center justify-center gap-5 px-3 py-4 sm:p-8">
-      <div className="shell console-grid land:w-auto land:max-w-none land:rounded-[30px] land:px-6 land:py-4 relative w-full max-w-[440px] rounded-[20px_20px_72px_20px] px-4 pt-4 pb-8 sm:px-6 sm:pt-6 sm:pb-10">
+    <main className="land:p-2 sm:short:py-4 flex min-h-dvh flex-col items-center justify-center gap-5 px-3 py-4 sm:p-8">
+      <div className="shell console-grid land:w-auto land:max-w-none land:rounded-[30px] land:px-6 land:py-4 short:pt-3 short:pb-5 tiny:pb-3 relative w-full rounded-[20px_20px_72px_20px] px-4 pt-4 pb-8 sm:px-6 sm:pt-6 sm:pb-10">
         {/* Screen surround. In landscape its width follows the viewport height. */}
         <div
           style={{ gridArea: 'screen' }}
-          className="bezel land:w-[calc(100dvh-126px)] land:rounded-[10px_10px_32px_10px] land:px-3.5 land:pt-2 land:pb-5 rounded-[10px_10px_40px_10px] px-3.5 pt-2.5 pb-7 sm:px-5 sm:pt-3 sm:pb-8"
+          className="bezel land:w-[calc(100svh-126px)] land:px-3.5 land:pt-2 land:pb-3.5 rounded-[10px] px-3.5 pt-2.5 pb-3.5 sm:px-5 sm:pt-3 sm:pb-5"
         >
           <div className="land:mb-2 mb-2.5 flex items-center gap-2.5 sm:mb-3">
             <span className="flex shrink-0 items-center gap-1.5">
@@ -140,7 +140,7 @@ export default function Device({
         <Link
           to="/"
           style={{ gridArea: 'brand' }}
-          className="font-case text-ink-dim hover:text-ink focus-visible:outline-lcd-3 land:hidden mt-4 flex w-fit items-center gap-2 rounded-sm text-[15px] leading-none font-extrabold tracking-[0.02em] italic focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-base"
+          className="font-case text-ink-dim hover:text-ink focus-visible:outline-lcd-3 land:hidden tiny:hidden short:mt-2.5 mt-4 flex w-fit items-center gap-2 rounded-sm text-[15px] leading-none font-extrabold tracking-[0.02em] italic focus-visible:outline-2 focus-visible:outline-offset-4 sm:text-base"
         >
           <LogoMark className="size-[18px]" plate />
           SUPER TIC-TAC-TOE
@@ -150,20 +150,20 @@ export default function Device({
           <>
             <div
               style={{ gridArea: 'dpad' }}
-              className="land:mt-0 land:self-center mt-5 justify-self-start sm:mt-6"
+              className="land:mt-0 land:self-center short:mt-3 short:[zoom:0.86] tiny:mt-2 tiny:[zoom:0.74] mt-5 justify-self-start sm:mt-6"
             >
               <DPad keyProps={key} />
             </div>
             <div
               style={{ gridArea: 'face' }}
-              className="land:mt-0 land:self-center mt-5 justify-self-end sm:mt-6"
+              className="land:mt-0 land:self-center short:mt-3 short:[zoom:0.86] tiny:mt-2 tiny:[zoom:0.74] mt-5 justify-self-end sm:mt-6"
             >
               <FaceButtons keyProps={key} labels={pad.labels} />
             </div>
-            {/* Shifted left in portrait to clear the speaker grille. */}
+            {/* Shifted left in portrait to clear the speaker grille and the B label. */}
             <div
               style={{ gridArea: 'select' }}
-              className="land:m-0 land:translate-x-0 land:self-end land:justify-self-center mt-1 mr-2.5 -translate-x-6 justify-self-end sm:mr-3.5"
+              className="land:m-0 land:translate-x-0 land:self-end land:justify-self-center short:mt-2 short:[zoom:0.9] tiny:mt-1.5 tiny:[zoom:0.8] mt-3 mr-2.5 -translate-x-10 justify-self-end sm:mr-3.5"
             >
               <PillKey
                 name="SELECT"
@@ -173,7 +173,7 @@ export default function Device({
             </div>
             <div
               style={{ gridArea: 'start' }}
-              className="land:m-0 land:translate-x-0 land:self-end land:justify-self-center mt-1 ml-2.5 -translate-x-6 justify-self-start sm:ml-3.5"
+              className="land:m-0 land:translate-x-0 land:self-end land:justify-self-center short:mt-2 short:[zoom:0.9] tiny:mt-1.5 tiny:[zoom:0.8] mt-3 ml-2.5 -translate-x-10 justify-self-start sm:ml-3.5"
             >
               <PillKey
                 name="START"
@@ -185,10 +185,18 @@ export default function Device({
           </>
         )}
 
+        {/* Maker's mark moulded into the case: barely there, like a model number. */}
+        <span
+          aria-hidden="true"
+          className="land:hidden tiny:hidden font-case short:bottom-1 sm:short:bottom-1 pointer-events-none absolute bottom-2.5 left-6 text-[8px] font-extrabold tracking-[0.3em] text-[#1c1b23] italic [text-shadow:0_1px_0_rgb(255_255_255/0.07)] sm:bottom-3.5 sm:left-8"
+        >
+          AKDEVV
+        </span>
+
         {/* Speaker grille, decorative. */}
         <div
           aria-hidden="true"
-          className="land:hidden absolute right-7 bottom-10 flex -rotate-[28deg] gap-[7px] sm:right-9 sm:bottom-12"
+          className="land:hidden tiny:hidden absolute right-7 bottom-10 flex -rotate-[28deg] gap-[7px] sm:right-9 sm:bottom-12"
         >
           {[0, 1, 2, 3, 4, 5].map((i) => (
             <span key={i} className="well h-10 w-[5px] rounded-full" />
@@ -389,7 +397,7 @@ export function StatusLine({
   return (
     <p
       role="status"
-      className="mt-2.5 flex min-h-5 items-center justify-center gap-2 text-center text-[9px] leading-relaxed uppercase sm:text-[10px]"
+      className="mt-2.5 flex min-h-5 items-center justify-center gap-2 text-center text-[9px] leading-relaxed whitespace-nowrap uppercase sm:text-[10px] @max-[15rem]:text-[8px]"
     >
       {icon}
       {children}

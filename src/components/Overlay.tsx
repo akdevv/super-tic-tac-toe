@@ -15,7 +15,7 @@ export function ScreenOverlay({
     <div
       role="dialog"
       aria-label={label}
-      className="bg-lcd-0/95 land:gap-2 land:p-2 absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 overflow-y-auto p-2.5 sm:p-4"
+      className="bg-lcd-0/95 land:gap-2 land:p-2 absolute inset-0 z-20 flex flex-col items-center justify-center-safe gap-3 overflow-y-auto p-2.5 sm:p-4"
     >
       {title && <p className="text-xs">{title}</p>}
       {children}

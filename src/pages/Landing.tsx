@@ -4,6 +4,8 @@ import Device, { type Pad } from '../components/Device.tsx'
 import { LogoLockup } from '../components/Logo.tsx'
 import { Menu, Slot } from '../components/Menu.tsx'
 import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
+import { useAboutMenu } from '../hooks/useAboutMenu.ts'
+import About from '../components/About.tsx'
 import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
 import Rules from '../components/Rules.tsx'
 import { useRules } from '../hooks/useRules.ts'
@@ -12,7 +14,7 @@ import { other, type Player } from '../game/engine.ts'
 
 const LEVEL_NAMES = Object.keys(LEVELS) as Level[]
 
-type Screen = 'main' | 'cpu' | 'settings' | 'rules'
+type Screen = 'main' | 'cpu' | 'settings' | 'about' | 'rules'
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -108,7 +110,11 @@ export default function Landing() {
   const main = useMenu(mainEntries)
   const rules = useRules(back)
   const cpu = useMenu(cpuEntries, back)
-  const settings = useSettingsMenu(back)
+  const about = useAboutMenu(() => setScreen('settings'))
+  const settings = useSettingsMenu(back, () => {
+    about.setSel(0)
+    setScreen('about')
+  })
 
   const pads: Record<Screen, Pad> = {
     main: {
@@ -129,15 +135,22 @@ export default function Landing() {
       select: () => setScreen('rules'),
       labels: { a: 'OK', b: 'BACK', start: 'MENU', select: 'HELP' },
     },
+    about: {
+      ...about.pad,
+      start: back,
+      labels: { a: 'OK', b: 'BACK', start: 'MENU' },
+    },
     rules: rules.pad,
   }
 
   return (
     <Device pad={pads[screen]}>
-      {screen === 'rules' ? (
+      {screen === 'about' ? (
+        <About {...about} />
+      ) : screen === 'rules' ? (
         <Rules page={rules.page} setPage={rules.setPage} onDone={rules.done} />
       ) : (
-        <div className="land:gap-3 flex h-full flex-col justify-center-safe gap-5 sm:gap-6 @max-[18rem]:gap-3">
+        <div className="land:gap-3 flex h-full flex-col justify-center-safe gap-4 sm:gap-5 @max-[18rem]:gap-2.5">
           <LogoLockup />
           {screen === 'main' && (
             <Menu label="Main menu" entries={mainEntries} {...main} />

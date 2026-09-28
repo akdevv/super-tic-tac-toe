@@ -11,6 +11,8 @@ import { sfx } from '../audio/sfx.ts'
 import { Menu } from '../components/Menu.tsx'
 import { useGameSounds } from '../hooks/useSound.ts'
 import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
+import { useAboutMenu } from '../hooks/useAboutMenu.ts'
+import About from '../components/About.tsx'
 import { haptic } from '../audio/haptics.ts'
 import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
 import { useOnceHint } from '../hooks/useOnceHint.ts'
@@ -88,7 +90,7 @@ export default function OnlineGame() {
   const [idle, setIdle] = useState(false)
   const [copied, setCopied] = useState(false)
   const [overlay, setOverlay] = useState<
-    'pause' | 'resign' | 'settings' | 'help' | null
+    'pause' | 'resign' | 'settings' | 'about' | 'help' | null
   >(null)
   const [rawCursor, setCursor] = useState(40)
   const [showCursor, setShowCursor] = useState(false)
@@ -196,7 +198,14 @@ export default function OnlineGame() {
     },
   ]
   const pause = useMenu(pauseEntries, close)
-  const settings = useSettingsMenu(() => setOverlay('pause'))
+  const about = useAboutMenu(() => setOverlay('settings'))
+  const settings = useSettingsMenu(
+    () => setOverlay('pause'),
+    () => {
+      about.setSel(0)
+      setOverlay('about')
+    },
+  )
   const resign = useMenu(resignEntries, () => setOverlay('pause'))
   useGameSounds(s, (game?.moves.length ?? 0) / 2, seat, { resetSound: true })
   const rules = useRules(close)
@@ -331,7 +340,10 @@ export default function OnlineGame() {
     place(cursor)
   }
 
-  const pads: Record<'game' | 'pause' | 'resign' | 'settings' | 'help', Pad> = {
+  const pads: Record<
+    'game' | 'pause' | 'resign' | 'settings' | 'about' | 'help',
+    Pad
+  > = {
     game: {
       up: go('up'),
       down: go('down'),
@@ -366,6 +378,11 @@ export default function OnlineGame() {
     },
     settings: {
       ...settings.pad,
+      start: closeOverlay,
+      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
+    },
+    about: {
+      ...about.pad,
       start: closeOverlay,
       labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
     },
@@ -460,6 +477,11 @@ export default function OnlineGame() {
       {overlay === 'settings' && (
         <ScreenOverlay title="SETTINGS">
           <Menu label="Settings" {...settings} />
+        </ScreenOverlay>
+      )}
+      {overlay === 'about' && (
+        <ScreenOverlay label="About">
+          <About {...about} />
         </ScreenOverlay>
       )}
       {overlay === 'help' && (

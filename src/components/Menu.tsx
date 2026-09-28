@@ -40,7 +40,7 @@ export function Menu({
               }}
               onMouseEnter={() => !e.disabled && setSel(i)}
               onFocus={() => setSel(i)}
-              className="disabled:text-lcd-1 land:min-h-7 flex min-h-9 w-full items-center gap-3 px-2 text-left text-[10px] uppercase focus-visible:outline-none enabled:cursor-pointer sm:text-[11px] @max-[18rem]:min-h-8"
+              className="disabled:text-lcd-1 land:min-h-7 flex min-h-8 w-full items-center gap-3 px-2 text-left text-[10px] uppercase focus-visible:outline-none enabled:cursor-pointer sm:text-[11px] @max-[18rem]:min-h-[30px]"
             >
               <span
                 aria-hidden="true"
@@ -55,7 +55,7 @@ export function Menu({
       </ul>
       <p
         aria-live="polite"
-        className="text-lcd-2 land:mt-1 mt-4 min-h-4 text-center text-[7px] leading-loose sm:text-[8px] @max-[18rem]:mt-2"
+        className="text-lcd-2 land:mt-1 mt-3 min-h-4 text-center text-[7px] leading-relaxed sm:text-[8px] @max-[18rem]:mt-1.5"
       >
         {entries[sel]?.hint}
       </p>

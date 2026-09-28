@@ -59,9 +59,9 @@ export function LogoMark({
 /** Title-screen lockup: mark above the stacked wordmark. */
 export function LogoLockup() {
   return (
-    <div className="land:gap-2 flex flex-col items-center gap-3 text-center">
-      <LogoMark className="land:hidden size-12 sm:size-16 @max-[18rem]:size-10" />
-      <h1 className="flex flex-col items-center gap-2 leading-none">
+    <div className="land:gap-2 flex flex-col items-center gap-2.5 text-center @max-[18rem]:gap-1.5">
+      <LogoMark className="land:hidden size-10 sm:size-14 @max-[18rem]:size-8 @max-[14rem]:hidden" />
+      <h1 className="flex flex-col items-center gap-1.5 leading-none">
         <span className="text-lcd-2 text-[10px] tracking-[0.5em] sm:text-xs">
           SUPER
         </span>

@@ -32,6 +32,20 @@
 
 /* Phones held sideways: the console switches to a wide layout. */
 @custom-variant land (@media (orientation: landscape) and (max-height: 600px));
+/* Short screens (small phones, browser bars showing, short desktop windows),
+   but not the landscape-phone layout: compact controls. */
+@custom-variant short {
+  @media (orientation: portrait) and (max-height: 780px),
+    (min-height: 601px) and (max-height: 780px) {
+    @slot;
+  }
+}
+/* Very short portrait screens (e.g. iPhone SE with browser bars): smaller still. */
+@custom-variant tiny {
+  @media (orientation: portrait) and (max-height: 620px) {
+    @slot;
+  }
+}
 
 @keyframes blink {
   50% {
@@ -47,11 +61,14 @@
 
 html {
   color-scheme: dark;
+  /* No rubber-band scrolling on phones: the console already fits. */
+  overscroll-behavior: none;
   background: var(--color-shell-lo);
 }
 
 body {
   margin: 0;
+  overscroll-behavior: none;
   /* Fast taps on keys shouldn't zoom or flash on phones. */
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
@@ -112,6 +129,38 @@ body {
       inset 0 -4px 0 rgb(0 0 0 / 0.22),
       0 8px 0 #16151b,
       0 30px 50px -18px rgb(0 0 0 / 0.75);
+  }
+
+  /*
+   * Console width cap so the whole handheld fits the visible height. Its
+   * height is its width plus a fixed amount (controls, bezel), so capping the
+   * width by 100svh (the height with browser toolbars showing) always fits.
+   * Offsets = that fixed amount + page padding (+ desktop key legend),
+   * measured per layout, plus 12px of slack for real-device rounding.
+   */
+  .shell {
+    max-width: max(260px, min(440px, calc(100svh - 381px)));
+  }
+  @media (min-width: 640px) {
+    .shell {
+      max-width: max(260px, min(440px, calc(100svh - 456px)));
+    }
+  }
+  @media (orientation: portrait) and (max-height: 780px),
+    (min-height: 601px) and (max-height: 780px) {
+    .shell {
+      max-width: max(260px, min(440px, calc(100svh - 320px)));
+    }
+    @media (min-width: 640px) {
+      .shell {
+        max-width: max(260px, min(440px, calc(100svh - 343px)));
+      }
+    }
+  }
+  @media (orientation: portrait) and (max-height: 620px) {
+    .shell {
+      max-width: max(240px, min(440px, calc(100svh - 257px)));
+    }
   }
 
   /* Screen surround: one flat plate, set slightly into the shell. */

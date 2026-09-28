@@ -9,8 +9,8 @@ const name = (text: string) => (
   <span className="inline-block w-[10ch]">{text}</span>
 )
 
-/** The SETTINGS submenu (sound, vibration), used on the title and pause screens. */
-export function useSettingsMenu(onBack: () => void) {
+/** The SETTINGS submenu (sound, vibration, about), used on the title and pause screens. */
+export function useSettingsMenu(onBack: () => void, onAbout: () => void) {
   const { soundOn, vibrationOn, toggleSound, toggleVibration } = useSettings()
   const entries: MenuEntry[] = [
     {
@@ -35,6 +35,7 @@ export function useSettingsMenu(onBack: () => void) {
       onLeft: toggleVibration,
       onRight: toggleVibration,
     },
+    { label: 'about', hint: 'WHO MADE THIS', onSelect: onAbout },
     { label: 'back', onSelect: onBack },
   ]
   return { entries, ...useMenu(entries, onBack) }

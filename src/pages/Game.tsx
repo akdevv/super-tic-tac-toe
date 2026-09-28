@@ -6,6 +6,8 @@ import { sfx } from '../audio/sfx.ts'
 import { Menu } from '../components/Menu.tsx'
 import { useGameSounds } from '../hooks/useSound.ts'
 import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
+import { useAboutMenu } from '../hooks/useAboutMenu.ts'
+import About from '../components/About.tsx'
 import { haptic } from '../audio/haptics.ts'
 import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
 import { useOnceHint } from '../hooks/useOnceHint.ts'
@@ -86,9 +88,9 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
   const [rawCursor, setCursor] = useState(40)
   const cursor = followPlay(s, rawCursor)
   const [showCursor, setShowCursor] = useState(false)
-  const [overlay, setOverlay] = useState<'pause' | 'settings' | 'help' | null>(
-    null,
-  )
+  const [overlay, setOverlay] = useState<
+    'pause' | 'settings' | 'about' | 'help' | null
+  >(null)
   // The result banner can be hidden to look at the final board.
   const [hiddenFor, setHiddenFor] = useState<LocalGame | null>(null)
   const bannerShown = !!s.winner && hiddenFor !== g
@@ -151,7 +153,14 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     },
   ]
   const pause = useMenu(pauseEntries, close)
-  const settings = useSettingsMenu(() => setOverlay('pause'))
+  const about = useAboutMenu(() => setOverlay('settings'))
+  const settings = useSettingsMenu(
+    () => setOverlay('pause'),
+    () => {
+      about.setSel(0)
+      setOverlay('about')
+    },
+  )
   const blocked = () => {
     sfx.blocked()
     haptic.blocked()
@@ -197,7 +206,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     } else blocked()
   }
 
-  const pads: Record<'game' | 'pause' | 'settings' | 'help', Pad> = {
+  const pads: Record<'game' | 'pause' | 'settings' | 'about' | 'help', Pad> = {
     game: {
       up: go('up'),
       down: go('down'),
@@ -226,6 +235,11 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     },
     settings: {
       ...settings.pad,
+      start: closeOverlay,
+      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
+    },
+    about: {
+      ...about.pad,
       start: closeOverlay,
       labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
     },
@@ -330,6 +344,11 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
       {overlay === 'settings' && (
         <ScreenOverlay title="SETTINGS">
           <Menu label="Settings" {...settings} />
+        </ScreenOverlay>
+      )}
+      {overlay === 'about' && (
+        <ScreenOverlay label="About">
+          <About {...about} />
         </ScreenOverlay>
       )}
       {overlay === 'help' && (
