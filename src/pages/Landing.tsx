@@ -1,72 +1,153 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
+import Device, { type Pad } from '../components/Device.tsx'
+import { LogoLockup } from '../components/Logo.tsx'
+import { Menu, Slot } from '../components/Menu.tsx'
+import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
+import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
+import Rules from '../components/Rules.tsx'
+import { useRules } from '../hooks/useRules.ts'
 import { LEVELS, type Level } from '../game/bot.ts'
-import type { Player } from '../game/engine.ts'
+import { other, type Player } from '../game/engine.ts'
+
+const LEVEL_NAMES = Object.keys(LEVELS) as Level[]
+
+type Screen = 'main' | 'cpu' | 'settings' | 'rules'
 
 export default function Landing() {
   const navigate = useNavigate()
-  const [creating, setCreating] = useState(false)
-  const [error, setError] = useState(false)
+  const [screen, setScreen] = useState<Screen>('main')
   const [level, setLevel] = useState<Level>('medium')
   const [side, setSide] = useState<Player>('X')
+  const [online, setOnline] = useState<'idle' | 'connecting' | 'error'>('idle')
 
   async function playOnline() {
-    setCreating(true)
-    setError(false)
+    setOnline('connecting')
     try {
       const { createGame } = await import('../online/firebase.ts')
       navigate(`/game/${await createGame()}`)
     } catch (e) {
       console.error(e)
-      setError(true)
-      setCreating(false)
+      setOnline('error')
     }
   }
 
+  const cycleLevel = (step: number) =>
+    setLevel(
+      LEVEL_NAMES[
+        (LEVEL_NAMES.indexOf(level) + step + LEVEL_NAMES.length) %
+          LEVEL_NAMES.length
+      ],
+    )
+  const flipSide = () => setSide(other(side))
+  const startCpu = () => navigate(`/game?bot=${level}&me=${side}`)
+  const back = () => setScreen('main')
+
+  const mainEntries: MenuEntry[] = [
+    {
+      label: '2 players',
+      hint: 'PASS AND PLAY ON ONE SCREEN',
+      onSelect: () => navigate('/game'),
+    },
+    {
+      label: 'vs CPU',
+      hint: 'PLAY AGAINST THE COMPUTER',
+      onSelect: () => setScreen('cpu'),
+    },
+    {
+      label: online === 'connecting' ? 'connecting…' : 'online',
+      hint:
+        online === 'error'
+          ? 'NO SIGNAL. TRY AGAIN.'
+          : 'INVITE A FRIEND WITH A LINK',
+      disabled: online === 'connecting',
+      onSelect: playOnline,
+    },
+    {
+      label: 'settings',
+      hint: 'SOUND AND VIBRATION',
+      onSelect: () => setScreen('settings'),
+    },
+    {
+      label: 'how to play',
+      hint: 'THE RULES IN 30 SECONDS',
+      onSelect: () => setScreen('rules'),
+    },
+  ]
+  const cpuEntries: MenuEntry[] = [
+    {
+      label: (
+        <>
+          level&nbsp;&nbsp;‹<Slot chars={6}>{level}</Slot>›
+        </>
+      ),
+      hint: '◀ ▶ TO CHANGE',
+      onSelect: () => cycleLevel(1),
+      onLeft: () => cycleLevel(-1),
+      onRight: () => cycleLevel(1),
+    },
+    {
+      label: (
+        <>
+          play as&nbsp;&nbsp;‹<Slot chars={3}>{side}</Slot>›
+        </>
+      ),
+      hint: 'X MOVES FIRST',
+      onSelect: flipSide,
+      onLeft: flipSide,
+      onRight: flipSide,
+    },
+    {
+      label: 'start',
+      hint: `${level.toUpperCase()} CPU · YOU ARE ${side}`,
+      onSelect: startCpu,
+    },
+    { label: 'back', onSelect: back },
+  ]
+
+  const main = useMenu(mainEntries)
+  const rules = useRules(back)
+  const cpu = useMenu(cpuEntries, back)
+  const settings = useSettingsMenu(back)
+
+  const pads: Record<Screen, Pad> = {
+    main: {
+      ...main.pad,
+      start: main.pad.a,
+      select: () => setScreen('rules'),
+      labels: { a: 'OK', start: 'START', select: 'HELP' },
+    },
+    cpu: {
+      ...cpu.pad,
+      start: startCpu,
+      select: () => setScreen('rules'),
+      labels: { a: 'OK', b: 'BACK', start: 'PLAY', select: 'HELP' },
+    },
+    settings: {
+      ...settings.pad,
+      start: back,
+      select: () => setScreen('rules'),
+      labels: { a: 'OK', b: 'BACK', start: 'MENU', select: 'HELP' },
+    },
+    rules: rules.pad,
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-3xl font-bold">Super Tic-Tac-Toe</h1>
-      <div className="flex gap-4">
-        <Link to="/game" className="border px-3 py-1">
-          Local game
-        </Link>
-        <button
-          className="border px-3 py-1 disabled:opacity-40"
-          disabled={creating}
-          onClick={playOnline}
-        >
-          {creating ? 'Creating…' : 'Play online'}
-        </button>
-      </div>
-      <div className="flex items-center gap-2">
-        <select
-          aria-label="Bot difficulty"
-          className="border px-2 py-1"
-          value={level}
-          onChange={(e) => setLevel(e.target.value as Level)}
-        >
-          {Object.keys(LEVELS).map((l) => (
-            <option key={l} value={l}>
-              {l}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="Your side"
-          className="border px-2 py-1"
-          value={side}
-          onChange={(e) => setSide(e.target.value as Player)}
-        >
-          <option value="X">Play as X</option>
-          <option value="O">Play as O</option>
-        </select>
-        <Link to={`/game?bot=${level}&me=${side}`} className="border px-3 py-1">
-          Play vs bot
-        </Link>
-      </div>
-      {error && (
-        <p className="text-red-600">Couldn't create a game. Try again.</p>
+    <Device pad={pads[screen]}>
+      {screen === 'rules' ? (
+        <Rules page={rules.page} setPage={rules.setPage} onDone={rules.done} />
+      ) : (
+        <div className="land:gap-3 flex h-full flex-col justify-center-safe gap-5 sm:gap-6 @max-[18rem]:gap-3">
+          <LogoLockup />
+          {screen === 'main' && (
+            <Menu label="Main menu" entries={mainEntries} {...main} />
+          )}
+          {screen === 'cpu' && (
+            <Menu label="Play vs CPU" entries={cpuEntries} {...cpu} />
+          )}
+          {screen === 'settings' && <Menu label="Settings" {...settings} />}
+        </div>
       )}
-    </main>
+    </Device>
   )
 }

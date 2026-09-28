@@ -1,1 +1,213 @@
 @import 'tailwindcss';
+
+/* Handheld theme: a dark console shell around a 4-shade green LCD. */
+@theme {
+  --font-pixel: 'Press Start 2P', ui-monospace, monospace;
+  /* Lettering printed on the plastic (keys, brand); the screen stays pixel. */
+  --font-case: 'Saira', system-ui, sans-serif;
+
+  --color-shell: #2a2a36;
+  --color-shell-lo: #17171f;
+  --color-bezel: #3a3a4a;
+  --color-bezel-lo: #22222c;
+  --color-ink: #c9c9d6;
+  --color-ink-dim: #8a8a9c;
+
+  /* LCD, darkest to lightest */
+  --color-lcd-0: #0f380f;
+  --color-lcd-edge: #133f13;
+  --color-lcd-soft: #174a17; /* cells of the board you can play in */
+  --color-lcd-1: #306230;
+  --color-lcd-2: #8bac0f;
+  --color-lcd-3: #9bbc0f;
+
+  --color-btn-a: #8b2252;
+  --color-btn-a-lo: #4d1030;
+  --color-btn-a-ink: #f3e6ec;
+  --color-led: #ff3b3b;
+
+  --animate-blink: blink 1s steps(2, jump-none) infinite;
+  --animate-pop: pop 180ms steps(3, jump-none);
+}
+
+/* Phones held sideways: the console switches to a wide layout. */
+@custom-variant land (@media (orientation: landscape) and (max-height: 600px));
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blink {
+    animation: none;
+  }
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-shell-lo);
+}
+
+body {
+  margin: 0;
+  /* Fast taps on keys shouldn't zoom or flash on phones. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100dvh;
+  font-family: var(--font-pixel);
+  color: var(--color-ink);
+  /*
+   * The surface the console lies on: a faint green spill from the LCD, a soft
+   * spotlight fading to a dark vignette, and a barely-there wallpaper of the
+   * game's own pixel X / O sprites.
+   */
+  /* Layers, top first: wallpaper, screen glow, spotlight. */
+  background:
+    url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' shape-rendering='crispEdges'><path fill='%239bbc0f' fill-opacity='0.018' d='M6 6h1v1h-1zM10 6h1v1h-1zM7 7h1v1h-1zM9 7h1v1h-1zM8 8h1v1h-1zM7 9h1v1h-1zM9 9h1v1h-1zM6 10h1v1h-1zM10 10h1v1h-1zM25 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM24 26h1v1h-1zM28 26h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1z'/></svg>")
+      0 0 / 108px 108px,
+    radial-gradient(
+      ellipse 42% 38% at 50% 40%,
+      rgb(155 188 15 / 0.035),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 70% at 50% 42%,
+      #1f1e27 0%,
+      #18171e 55%,
+      #111116 100%
+    ),
+    var(--color-shell-lo);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.4);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop {
+    animation: none;
+  }
+}
+
+/*
+ * Console materials, drawn as a flat illustration lit from the top-left:
+ * - raised parts: thin light line on top, hard darker edge below, one soft shadow
+ * - recessed parts ("wells"): inner shadow on top, faint light lip at the bottom
+ */
+@layer components {
+  .shell {
+    user-select: none;
+    -webkit-user-select: none;
+    background: linear-gradient(160deg, #373643 0%, #2d2c37 45%, #26252f 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.09),
+      inset 1.5px 0 0 rgb(255 255 255 / 0.04),
+      inset 0 -4px 0 rgb(0 0 0 / 0.22),
+      0 8px 0 #16151b,
+      0 30px 50px -18px rgb(0 0 0 / 0.75);
+  }
+
+  /* Screen surround: one flat plate, set slightly into the shell. */
+  .bezel {
+    background: #3c3d4f;
+    box-shadow:
+      inset 0 2px 3px rgb(0 0 0 / 0.35),
+      inset 0 -1px 0 rgb(255 255 255 / 0.05),
+      0 1px 0 rgb(255 255 255 / 0.06);
+  }
+
+  /* LCD: faint pixel matrix (the screen's dot-matrix texture), one clean
+     dark frame, soft top shadow and a light glass glare. */
+  .lcd {
+    position: relative;
+    background-color: var(--color-lcd-0);
+    background-image:
+      linear-gradient(rgb(0 0 0 / 0.14) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(0 0 0 / 0.14) 1px, transparent 1px);
+    background-size: 3px 3px;
+    box-shadow:
+      0 0 0 3px #26273a,
+      0 0 0 4px rgb(255 255 255 / 0.04),
+      inset 0 3px 8px rgb(0 0 0 / 0.45);
+  }
+  .lcd::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(
+      125deg,
+      rgb(255 255 255 / 0.06) 0%,
+      rgb(255 255 255 / 0) 32%
+    );
+  }
+
+  /* Console layout. Portrait: screen on top, controls below.
+     Landscape (short screens): controls either side of the screen. */
+  .console-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'screen screen'
+      'brand brand'
+      'dpad face'
+      'select start';
+  }
+  @media (orientation: landscape) and (max-height: 600px) {
+    .console-grid {
+      grid-template-columns: auto auto auto;
+      grid-template-rows: 1fr auto;
+      grid-template-areas:
+        'dpad screen face'
+        'select screen start';
+      column-gap: 20px;
+    }
+  }
+
+  /* Recess that keys sit in. */
+  .well {
+    background: #22212a;
+    box-shadow:
+      inset 0 2px 3px rgb(0 0 0 / 0.55),
+      inset 0 -1px 0 rgb(255 255 255 / 0.04),
+      0 1px 0 rgb(255 255 255 / 0.05);
+  }
+
+  /* Raised keys. `--edge` = hard bottom edge colour. */
+  .key {
+    --edge: #0f0f13;
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.22),
+      inset 0 -1.5px 0 rgb(0 0 0 / 0.18),
+      0 3px 0 var(--edge),
+      0 5px 7px rgb(0 0 0 / 0.4);
+    transition:
+      transform 50ms,
+      box-shadow 50ms;
+  }
+  .key:enabled:active,
+  .key[data-pressed] {
+    transform: translateY(2px);
+    box-shadow:
+      inset 0 1.5px 0 rgb(255 255 255 / 0.14),
+      inset 0 -1px 0 rgb(0 0 0 / 0.18),
+      0 1px 0 var(--edge),
+      0 2px 3px rgb(0 0 0 / 0.35);
+  }
+  .key-a {
+    --edge: #4a0f2d;
+    background: linear-gradient(180deg, #a93268 0%, #8d2456 70%, #7f1f4d 100%);
+  }
+  .key-pill {
+    --edge: #1a1920;
+    background: linear-gradient(180deg, #5a596b 0%, #454456 100%);
+  }
+}

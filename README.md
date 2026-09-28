@@ -4,6 +4,21 @@ Nine tic-tac-toe boards in one. Play locally on one screen, or online with a fri
 
 Stack: Vite + React + TypeScript + Tailwind, Firebase Realtime Database for online play, hosted on Vercel. No backend server.
 
+## Controls
+
+The app is a handheld console: tap the board directly, or use the on-screen keys / keyboard.
+
+Sound effects are synthesized in the browser (Web Audio). On phones, taps also vibrate via [web-haptics](https://github.com/lochie/web-haptics). Both can be switched off under SETTINGS.
+
+| Key    | Keyboard      | In game                        | In menus |
+| ------ | ------------- | ------------------------------ | -------- |
+| D-pad  | Arrow keys    | Move the cursor                | Move     |
+| A      | Enter / Space | Place mark · play again        | Select   |
+| B      | Backspace     | Undo · show board after a game | Back     |
+| START  | Esc           | Pause menu                     | –        |
+| SELECT | H / ?         | How to play                    | –        |
+| Sound  | M             | Mute / unmute (also in menus)  | –        |
+
 ## Project structure
 
 ```
