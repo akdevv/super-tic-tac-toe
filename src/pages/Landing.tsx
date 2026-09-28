@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import Device, { type Pad } from '../components/Device.tsx'
-import { LogoLockup } from '../components/Logo.tsx'
-import { Menu, Slot } from '../components/Menu.tsx'
-import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
-import { useAboutMenu } from '../hooks/useAboutMenu.ts'
-import About from '../components/About.tsx'
-import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
-import Rules from '../components/Rules.tsx'
-import { useRules } from '../hooks/useRules.ts'
+import Device from '../device/Device.tsx'
+import type { Pad } from '../device/pad.ts'
 import { LEVELS, type Level } from '../game/bot.ts'
 import { other, type Player } from '../game/engine.ts'
+import About from '../menus/About.tsx'
+import { Menu, Slot } from '../menus/Menu.tsx'
+import Rules from '../menus/Rules.tsx'
+import { useAboutMenu } from '../menus/useAboutMenu.ts'
+import { useMenu, type MenuEntry } from '../menus/useMenu.ts'
+import { useRules } from '../menus/useRules.ts'
+import { useSettingsMenu } from '../menus/useSettingsMenu.tsx'
+import { LogoLockup } from '../screen/Logo.tsx'
 
 const LEVEL_NAMES = Object.keys(LEVELS) as Level[]
 
@@ -148,7 +149,7 @@ export default function Landing() {
       {screen === 'about' ? (
         <About {...about} />
       ) : screen === 'rules' ? (
-        <Rules page={rules.page} setPage={rules.setPage} onDone={rules.done} />
+        <Rules {...rules} />
       ) : (
         <div className="land:gap-3 flex h-full flex-col justify-center-safe gap-4 sm:gap-5 @max-[18rem]:gap-2.5">
           <LogoLockup />

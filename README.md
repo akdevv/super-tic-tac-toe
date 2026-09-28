@@ -25,10 +25,14 @@ Sound effects are synthesized in the browser (Web Audio). On phones, taps also v
 src/
   main.tsx              entry + routes
   pages/                one component per route: Landing, Game (local/bot), OnlineGame
-  components/           shared UI (Board)
+  device/               handheld console shell, controls, keyboard -> pad mapping
+  screen/               what's drawn on the LCD: Board, sprites, logo, HUD, overlays
+  menus/                D-pad menus, settings/about/rules screens and their hooks
+  feedback/             sound effects (Web Audio), haptics, on/off settings
   game/                 pure game logic, no React or Firebase
     engine.ts           rules: newGame, canPlay, play, replay
     bot.ts              MCTS bot; bot.worker.ts runs it off the main thread
+    cursor.ts           keyboard / D-pad cursor over the 9x9 grid
     localGame.ts        local/bot game reducer + saving to browser storage
   online/
     core.ts             pure online helpers: game ids, stored game shape, state
@@ -37,7 +41,6 @@ tests/
   unit/                 mirrors src/, runs with `pnpm test`
   rules/                database.rules.json tests, need the emulator
 database.rules.json     Firebase security rules (turns, seats, forfeits)
-old-code/               previous Next.js/Express version, reference only
 ```
 
 Anything in `game/` and `online/core.ts` stays free of browser and Firebase APIs so it runs in Node tests directly.

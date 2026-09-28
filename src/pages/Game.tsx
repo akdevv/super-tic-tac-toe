@@ -1,24 +1,11 @@
 import { useEffect, useMemo, useReducer, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import Board from '../components/Board.tsx'
-import Device, { Hud, StatusLine, type Pad } from '../components/Device.tsx'
-import { sfx } from '../audio/sfx.ts'
-import { Menu } from '../components/Menu.tsx'
-import { useGameSounds } from '../hooks/useSound.ts'
-import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
-import { useAboutMenu } from '../hooks/useAboutMenu.ts'
-import About from '../components/About.tsx'
-import { haptic } from '../audio/haptics.ts'
-import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
-import { useOnceHint } from '../hooks/useOnceHint.ts'
-import { useRules } from '../hooks/useRules.ts'
-import Rules from '../components/Rules.tsx'
-import {
-  ResultBanner,
-  ScreenOverlay,
-  ScreenChip,
-} from '../components/Overlay.tsx'
-import Sprite, { DrawMark } from '../components/Sprite.tsx'
+import Device from '../device/Device.tsx'
+import type { Pad } from '../device/pad.ts'
+import { useOnceHint } from '../device/useOnceHint.ts'
+import { haptic } from '../feedback/haptics.ts'
+import { sfx } from '../feedback/sfx.ts'
+import { blocked, useGameSounds } from '../feedback/useGameSounds.ts'
 import { LEVELS, type Level, type Move } from '../game/bot.ts'
 import { followPlay, moveWithin, type Dir } from '../game/cursor.ts'
 import { canPlay, other, type Player } from '../game/engine.ts'
@@ -32,6 +19,13 @@ import {
   stateOf,
   type LocalGame,
 } from '../game/localGame.ts'
+import { Menu } from '../menus/Menu.tsx'
+import { useGameMenus } from '../menus/useGameMenus.tsx'
+import { useMenu, type MenuEntry } from '../menus/useMenu.ts'
+import Board from '../screen/Board.tsx'
+import { Hud, StatusLine } from '../screen/Hud.tsx'
+import { ResultBanner, ScreenChip, ScreenOverlay } from '../screen/Overlay.tsx'
+import Sprite from '../screen/Sprite.tsx'
 
 // Even touching sessionStorage/localStorage can throw when storage is blocked.
 const noStore = { getItem: () => null, setItem() {}, removeItem() {} }
@@ -43,7 +37,6 @@ function storage(kind: 'sessionStorage' | 'localStorage') {
   }
 }
 
-/** Reads the mode from the URL; remounts the game when it changes. */
 export default function Game() {
   const [params] = useSearchParams()
   const levelParam = params.get('bot') ?? ''
@@ -51,7 +44,7 @@ export default function Game() {
   const me: Player = params.get('me') === 'O' ? 'O' : 'X'
   const bot = level ? other(me) : null
   const mode = level ? `bot-${level}-${me}` : 'local'
-  // Score is per difficulty, not per side, since it's kept as you/bot.
+  // Scores are kept as you/bot, so they're per level, not per side.
   const scoreMode = level ? `bot-${level}` : 'local'
   return (
     <LocalGamePage
@@ -84,14 +77,12 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
   const botThinking = bot !== null && !s.winner && s.turn === bot
   useGameSounds(s, g.moves.length, bot ? other(bot) : null)
 
-  // Cursor snaps into the forced board after each move.
   const [rawCursor, setCursor] = useState(40)
   const cursor = followPlay(s, rawCursor)
   const [showCursor, setShowCursor] = useState(false)
   const [overlay, setOverlay] = useState<
     'pause' | 'settings' | 'about' | 'help' | null
   >(null)
-  // The result banner can be hidden to look at the final board.
   const [hiddenFor, setHiddenFor] = useState<LocalGame | null>(null)
   const bannerShown = !!s.winner && hiddenFor !== g
 
@@ -119,6 +110,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     dispatch(action)
     close()
   }
+  const menus = useGameMenus(setOverlay)
   const pauseEntries: MenuEntry[] = [
     { label: 'resume', onSelect: close },
     {
@@ -140,10 +132,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     {
       label: 'settings',
       hint: 'SOUND AND VIBRATION',
-      onSelect: () => {
-        settings.setSel(0)
-        setOverlay('settings')
-      },
+      onSelect: menus.openSettings,
     },
     { label: 'how to play', onSelect: () => setOverlay('help') },
     {
@@ -153,21 +142,8 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     },
   ]
   const pause = useMenu(pauseEntries, close)
-  const about = useAboutMenu(() => setOverlay('settings'))
-  const settings = useSettingsMenu(
-    () => setOverlay('pause'),
-    () => {
-      about.setSel(0)
-      setOverlay('about')
-    },
-  )
-  const blocked = () => {
-    sfx.blocked()
-    haptic.blocked()
-  }
-  // First-time players learn that START holds new game, undo and the menu.
   const [startHint, dismissStartHint] = useOnceHint('sttt:hint:start')
-  const rules = useRules(close)
+
   const undo = () => {
     sfx.undo()
     dispatch({ type: 'undo' })
@@ -176,28 +152,18 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     sfx.start()
     dispatch({ type: 'restart' })
   }
-  const openHelp = () => {
-    sfx.select()
-    setOverlay('help')
-  }
-  const closeOverlay = () => {
-    sfx.back()
-    close()
-  }
   const openPause = () => {
     sfx.select()
     dismissStartHint()
     pause.setSel(0)
     setOverlay('pause')
   }
-
   const go = (dir: Dir) => () => {
     setShowCursor(true)
     setCursor(moveWithin(cursor, dir, s.winner ? null : s.activeBoard))
   }
   function pressA() {
     if (s.winner) return restart()
-    // First press just reveals the cursor.
     if (!showCursor) return setShowCursor(true)
     const board = Math.floor(cursor / 9)
     if (!botThinking && canPlay(s, board, cursor % 9)) {
@@ -206,7 +172,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     } else blocked()
   }
 
-  const pads: Record<'game' | 'pause' | 'settings' | 'about' | 'help', Pad> = {
+  const pads: Record<NonNullable<typeof overlay> | 'game', Pad> = {
     game: {
       up: go('up'),
       down: go('down'),
@@ -219,7 +185,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
           ? undo
           : undefined,
       start: openPause,
-      select: openHelp,
+      select: menus.openHelp,
       labels: {
         a: s.winner ? 'AGAIN' : 'PLACE',
         b: s.winner ? (bannerShown ? 'BOARD' : 'RESULT') : 'UNDO',
@@ -229,21 +195,11 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
     },
     pause: {
       ...pause.pad,
-      start: closeOverlay,
-      select: openHelp,
+      start: menus.closeOverlay,
+      select: menus.openHelp,
       labels: { a: 'OK', b: 'BACK', start: 'RESUME', select: 'HELP' },
     },
-    settings: {
-      ...settings.pad,
-      start: closeOverlay,
-      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
-    },
-    about: {
-      ...about.pad,
-      start: closeOverlay,
-      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
-    },
-    help: rules.pad,
+    ...menus.pads,
   }
 
   const result =
@@ -264,8 +220,6 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
       </>
     )
   else {
-    // The sprite before the text shows whose turn it is; the hidden letter
-    // says it for screen readers.
     status = (
       <>
         {!bot && <span className="sr-only">{s.turn} </span>}
@@ -290,6 +244,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
 
   return (
     <Device
+      title={level ? `vs CPU (${level})` : '2 players'}
       pad={pads[overlay ?? 'game']}
       glow={startHint && !overlay ? 'start' : undefined}
     >
@@ -311,17 +266,8 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
         />
         {bannerShown && (
           <ResultBanner
+            winner={s.winner!}
             title={result}
-            icon={
-              s.winner === 'draw' ? (
-                <DrawMark className="animate-pop text-lcd-3 w-16" />
-              ) : (
-                <Sprite
-                  p={s.winner!}
-                  className="animate-pop text-lcd-3 size-10"
-                />
-              )
-            }
             hint="A: PLAY AGAIN · B: SEE BOARD"
             onDismiss={() => setHiddenFor(g)}
           />
@@ -341,25 +287,7 @@ function LocalGamePage({ bot, level, mode, scoreMode }: Props) {
           <Menu label="Pause menu" entries={pauseEntries} {...pause} />
         </ScreenOverlay>
       )}
-      {overlay === 'settings' && (
-        <ScreenOverlay title="SETTINGS">
-          <Menu label="Settings" {...settings} />
-        </ScreenOverlay>
-      )}
-      {overlay === 'about' && (
-        <ScreenOverlay label="About">
-          <About {...about} />
-        </ScreenOverlay>
-      )}
-      {overlay === 'help' && (
-        <ScreenOverlay label="How to play">
-          <Rules
-            page={rules.page}
-            setPage={rules.setPage}
-            onDone={rules.done}
-          />
-        </ScreenOverlay>
-      )}
+      {menus.render(overlay)}
     </Device>
   )
 }

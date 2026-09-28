@@ -45,11 +45,7 @@ function rollout(s: GameState): Result {
   return s.winner
 }
 
-/**
- * Monte Carlo Tree Search: repeatedly picks a promising line (UCT), plays
- * the rest of the game randomly, and credits the result back up the tree.
- * Returns the most-visited move after `ms` milliseconds.
- */
+/** Monte Carlo Tree Search (UCT) for `ms` milliseconds. */
 export function bestMove(s: GameState, ms: number): Move {
   const moves = legalMoves(s)
   if (moves.length === 0) throw new Error('No legal moves: game is over')
@@ -58,7 +54,6 @@ export function bestMove(s: GameState, ms: number): Move {
   const end = Date.now() + ms
 
   while (Date.now() < end) {
-    // Select
     let n = root
     while (n.untried.length === 0 && n.children.length > 0) {
       const logN = Math.log(n.visits)
@@ -68,7 +63,6 @@ export function bestMove(s: GameState, ms: number): Move {
         return uct(c) > uct(best) ? c : best
       })
     }
-    // Expand
     if (n.untried.length > 0) {
       const m = n.untried.splice(
         Math.floor(Math.random() * n.untried.length),
@@ -78,7 +72,6 @@ export function bestMove(s: GameState, ms: number): Move {
       n.children.push(child)
       n = child
     }
-    // Simulate + backpropagate
     const result = rollout(n.state)
     for (let p: Node | null = n; p; p = p.parent) {
       const mover = other(p.state.turn)

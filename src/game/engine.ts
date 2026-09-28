@@ -2,12 +2,11 @@ export type Player = 'X' | 'O'
 export type Result = Player | 'draw' | null
 
 export interface GameState {
-  /** 81 cells, index = board * 9 + cell. Boards and cells are numbered 0-8, left to right, top to bottom. */
+  /** index = board * 9 + cell, both 0-8 in reading order. */
   cells: (Player | null)[]
-  /** Result of each small board. */
   boards: Result[]
   turn: Player
-  /** Board the current player must play in; null = any open board. */
+  /** null = any open board. */
   activeBoard: number | null
   winner: Result
 }
@@ -72,18 +71,13 @@ export function play(s: GameState, board: number, cell: number): GameState {
     cells,
     boards,
     turn: other(s.turn),
-    // Sent to a closed (won or full) board = play anywhere.
     activeBoard: boards[cell] === null ? cell : null,
-    // Drawn small boards count for nobody; all decided with no line = draw.
     winner:
       lineWinner(boards) ?? (boards.every((b) => b !== null) ? 'draw' : null),
   }
 }
 
-/**
- * Rebuilds a game from cell indices (board * 9 + cell). An illegal move
- * loses the game for whoever made it; moves after the game ends are ignored.
- */
+/** An illegal move loses the game for whoever made it. */
 export function replay(first: Player, moves: number[]): GameState {
   let s = newGame(first)
   for (const i of moves) {

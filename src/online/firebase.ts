@@ -41,8 +41,6 @@ if (emulator) {
   connectDatabaseEmulator(db, '127.0.0.1', 9000)
 }
 
-// The page opens the connection on mount and closes it on leave/idle, so
-// nothing stays connected in the background.
 export const connect = () => goOnline(db)
 export const disconnect = () => goOffline(db)
 
@@ -50,10 +48,9 @@ const gameRef = (id: string, path = '') => ref(db, `games/${id}/${path}`)
 
 let serverOffset = 0
 onValue(ref(db, '.info/serverTimeOffset'), (s) => (serverOffset = s.val() ?? 0))
-/** Current time on the database server (what the rules call `now`). */
+/** What the rules call `now`. */
 export const serverNow = () => Date.now() + serverOffset
 
-/** Anonymous uid, stable per browser (Firebase persists it). */
 export async function getUid(): Promise<string> {
   await auth.authStateReady()
   return (auth.currentUser ?? (await signInAnonymously(auth)).user).uid
@@ -79,12 +76,12 @@ export async function createGame(): Promise<string> {
   }
 }
 
-/** Takes the O seat. Rejects if it's taken or the host is offline. */
+/** Rejects if the seat is taken or the host is offline. */
 export async function joinGame(id: string) {
   await set(gameRef(id, 'players/O'), await getUid())
 }
 
-/** Calls `onDenied` when the game becomes unreadable (full, you're not in it). */
+/** `onDenied`: the game is full and you're not in it. */
 export function watchGame(
   id: string,
   cb: (g: OnlineGame | null) => void,
@@ -102,7 +99,6 @@ export function sendMove(
   return set(gameRef(id, 'moves'), g.moves + encodeMove(board, cell))
 }
 
-/** Records the result and starts a new round with the other starter. */
 export function rematch(id: string, g: OnlineGame, winner: Player | 'draw') {
   return update(gameRef(id), {
     moves: '',
@@ -112,12 +108,10 @@ export function rematch(id: string, g: OnlineGame, winner: Player | 'draw') {
   })
 }
 
-/** Ends the game with `loser` losing: resigning, or claiming a disconnect. */
 export function forfeit(id: string, loser: Player) {
   return set(gameRef(id, 'forfeit'), loser)
 }
 
-/** Marks `uid` online; the server records the time if the connection drops. */
 export function trackPresence(id: string, uid: string) {
   const me = gameRef(id, `presence/${uid}`)
   return onValue(ref(db, '.info/connected'), (snap) => {

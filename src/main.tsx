@@ -6,7 +6,6 @@ import Game from './pages/Game.tsx'
 import Landing from './pages/Landing.tsx'
 import NotFound from './pages/NotFound.tsx'
 
-// Firebase only loads for online games.
 const OnlineGame = lazy(() => import('./pages/OnlineGame.tsx'))
 
 createRoot(document.getElementById('root')!).render(

@@ -1,31 +1,25 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import Board from '../components/Board.tsx'
-import Device, {
-  Hud,
-  MessageScreen,
-  StatusLine,
-  type Pad,
-} from '../components/Device.tsx'
-import { sfx } from '../audio/sfx.ts'
-import { Menu } from '../components/Menu.tsx'
-import { useGameSounds } from '../hooks/useSound.ts'
-import { useSettingsMenu } from '../hooks/useSettingsMenu.tsx'
-import { useAboutMenu } from '../hooks/useAboutMenu.ts'
-import About from '../components/About.tsx'
-import { haptic } from '../audio/haptics.ts'
-import { useMenu, type MenuEntry } from '../hooks/useMenu.ts'
-import { useOnceHint } from '../hooks/useOnceHint.ts'
-import { useRules } from '../hooks/useRules.ts'
-import Rules from '../components/Rules.tsx'
-import {
-  ResultBanner,
-  ScreenOverlay,
-  ScreenChip,
-} from '../components/Overlay.tsx'
-import Sprite, { DrawMark } from '../components/Sprite.tsx'
+import Device from '../device/Device.tsx'
+import type { Pad } from '../device/pad.ts'
+import { useOnceHint } from '../device/useOnceHint.ts'
+import { haptic } from '../feedback/haptics.ts'
+import { sfx } from '../feedback/sfx.ts'
+import { blocked, useGameSounds } from '../feedback/useGameSounds.ts'
 import { followPlay, moveWithin, type Dir } from '../game/cursor.ts'
 import { canPlay, other } from '../game/engine.ts'
+import { Menu } from '../menus/Menu.tsx'
+import { useGameMenus } from '../menus/useGameMenus.tsx'
+import { useMenu, type MenuEntry } from '../menus/useMenu.ts'
+import {
+  decodeMoves,
+  FORFEIT_AFTER,
+  IDLE_TIMEOUT,
+  isGameId,
+  onlineState,
+  seatOf,
+  type OnlineGame as Game,
+} from '../online/core.ts'
 import {
   connect,
   disconnect,
@@ -38,21 +32,17 @@ import {
   trackPresence,
   watchGame,
 } from '../online/firebase.ts'
-import {
-  decodeMoves,
-  FORFEIT_AFTER,
-  IDLE_TIMEOUT,
-  isGameId,
-  onlineState,
-  seatOf,
-  type OnlineGame as Game,
-} from '../online/core.ts'
+import Board from '../screen/Board.tsx'
+import { Hud, MessageScreen, StatusLine } from '../screen/Hud.tsx'
+import { ResultBanner, ScreenChip, ScreenOverlay } from '../screen/Overlay.tsx'
+import Sprite from '../screen/Sprite.tsx'
 
 function Message({ title, children }: { title: string; children?: ReactNode }) {
   const navigate = useNavigate()
   const home = () => navigate('/')
   return (
     <Device
+      title="Online game"
       ledLabel="LINK"
       pad={{
         a: home,
@@ -76,7 +66,7 @@ async function shareLink(onCopied: () => void) {
       onCopied()
     }
   } catch {
-    // Share sheet dismissed or clipboard blocked: nothing to do.
+    // share sheet dismissed or clipboard blocked
   }
 }
 
@@ -105,7 +95,6 @@ export default function OnlineGame() {
   const hostOnline = game?.presence?.[game.players.X] === true
   const inPlay = !!seat && !!game?.players.O && !s?.winner && !idle
 
-  // Connection lives only while this page is open and not idle.
   useEffect(() => {
     if (idle) return
     connect()
@@ -113,7 +102,6 @@ export default function OnlineGame() {
   }, [idle])
 
   useEffect(() => {
-    // A malformed link can't be a game: don't sign in for nothing.
     if (validId) getUid().then(setUid)
   }, [validId])
 
@@ -122,8 +110,7 @@ export default function OnlineGame() {
     return watchGame(id, setGame, () => setDenied(true))
   }, [id, validId, uid])
 
-  // Claim the open seat once the host is online. Losing a race to another
-  // guest makes the game unreadable, which shows "full".
+  // Losing the seat race to another guest makes the game unreadable: "full".
   const canJoin =
     !!uid && !!game && seat === null && !game.players.O && hostOnline && !idle
   useEffect(() => {
@@ -134,7 +121,7 @@ export default function OnlineGame() {
     if (seat && uid && !idle) return trackPresence(id, uid)
   }, [seat, id, uid, idle])
 
-  // Opponent gone for FORFEIT_AFTER: claim the win (rules verify the time).
+  // Opponent gone for FORFEIT_AFTER: claim the win (the rules verify the time).
   useEffect(() => {
     if (!inPlay || opponentAway === null || !seat) return
     let timer: ReturnType<typeof setTimeout>
@@ -147,7 +134,6 @@ export default function OnlineGame() {
     return () => clearTimeout(timer)
   }, [inPlay, opponentAway, seat, id])
 
-  // Drop the connection after IDLE_TIMEOUT with nothing happening.
   const activity = `${game?.moves}|${game?.forfeit}|${game?.players.O}`
   useEffect(() => {
     if (idle) return
@@ -156,6 +142,7 @@ export default function OnlineGame() {
   }, [activity, idle])
 
   const close = () => setOverlay(null)
+  const menus = useGameMenus(setOverlay)
   const home = () => navigate('/')
   const share = () => shareLink(() => setCopied(true))
 
@@ -175,10 +162,7 @@ export default function OnlineGame() {
     {
       label: 'settings',
       hint: 'SOUND AND VIBRATION',
-      onSelect: () => {
-        settings.setSel(0)
-        setOverlay('settings')
-      },
+      onSelect: menus.openSettings,
     },
     { label: 'how to play', onSelect: () => setOverlay('help') },
     {
@@ -198,18 +182,8 @@ export default function OnlineGame() {
     },
   ]
   const pause = useMenu(pauseEntries, close)
-  const about = useAboutMenu(() => setOverlay('settings'))
-  const settings = useSettingsMenu(
-    () => setOverlay('pause'),
-    () => {
-      about.setSel(0)
-      setOverlay('about')
-    },
-  )
   const resign = useMenu(resignEntries, () => setOverlay('pause'))
   useGameSounds(s, (game?.moves.length ?? 0) / 2, seat, { resetSound: true })
-  const rules = useRules(close)
-  // Shown once the board is up (not in the lobby); same hint as local games.
   const [startHint, dismissStartHint] = useOnceHint(
     'sttt:hint:start',
     8000,
@@ -225,7 +199,6 @@ export default function OnlineGame() {
   if (game === null)
     return <Message title="GAME NOT FOUND">THE LINK MAY BE WRONG.</Message>
 
-  // Lobby: no board until both players are in.
   if (!game.players.O) {
     if (!seat)
       return (
@@ -235,6 +208,7 @@ export default function OnlineGame() {
       )
     return (
       <Device
+        title="Online game"
         ledLabel="LINK"
         led={idle ? 'off' : 'on'}
         pad={{
@@ -273,7 +247,6 @@ export default function OnlineGame() {
     byForfeit &&
     typeof game.presence?.[game.players[game.forfeit!]!] === 'number'
   const canRematch = !!seat && !!s.winner && !idle && opponentAway === null
-  // Banner identity: one per finished round.
   const round = `${game.first}|${game.moves}|${game.forfeit}`
   const bannerShown = !!s.winner && !idle && hiddenFor !== round
   const cursor = followPlay(s, rawCursor)
@@ -307,21 +280,9 @@ export default function OnlineGame() {
     )
   else status = s.activeBoard === null ? 'your move · any board' : 'your move'
 
-  const openHelp = () => {
-    sfx.select()
-    setOverlay('help')
-  }
-  const closeOverlay = () => {
-    sfx.back()
-    close()
-  }
   const go = (dir: Dir) => () => {
     setShowCursor(true)
     setCursor(moveWithin(cursor, dir, s.winner ? null : s.activeBoard))
-  }
-  const blocked = () => {
-    sfx.blocked()
-    haptic.blocked()
   }
   const place = (i: number) => {
     const board = Math.floor(i / 9)
@@ -357,7 +318,7 @@ export default function OnlineGame() {
         pause.setSel(0)
         setOverlay('pause')
       },
-      select: openHelp,
+      select: menus.openHelp,
       labels: {
         a: idle ? 'WAKE' : s.winner ? 'REMATCH' : 'PLACE',
         b: s.winner ? (bannerShown ? 'BOARD' : 'RESULT') : undefined,
@@ -367,32 +328,23 @@ export default function OnlineGame() {
     },
     pause: {
       ...pause.pad,
-      start: closeOverlay,
-      select: openHelp,
+      start: menus.closeOverlay,
+      select: menus.openHelp,
       labels: { a: 'OK', b: 'BACK', start: 'RESUME', select: 'HELP' },
     },
     resign: {
       ...resign.pad,
-      start: closeOverlay,
+      start: menus.closeOverlay,
       labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
     },
-    settings: {
-      ...settings.pad,
-      start: closeOverlay,
-      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
-    },
-    about: {
-      ...about.pad,
-      start: closeOverlay,
-      labels: { a: 'OK', b: 'BACK', start: 'RESUME' },
-    },
-    help: rules.pad,
+    ...menus.pads,
   }
 
   const opp = seat ? other(seat) : 'O'
 
   return (
     <Device
+      title="Online game"
       ledLabel="LINK"
       led={idle ? 'off' : inPlay && opponentAway !== null ? 'blink' : 'on'}
       pad={pads[overlay ?? 'game']}
@@ -421,17 +373,8 @@ export default function OnlineGame() {
         />
         {bannerShown && (
           <ResultBanner
+            winner={s.winner!}
             title={result}
-            icon={
-              s.winner === 'draw' ? (
-                <DrawMark className="animate-pop text-lcd-3 w-16" />
-              ) : (
-                <Sprite
-                  p={s.winner!}
-                  className="animate-pop text-lcd-3 size-10"
-                />
-              )
-            }
             hint={[
               resultHint,
               canRematch ? 'A: REMATCH · B: SEE BOARD' : 'B: SEE BOARD',
@@ -474,25 +417,7 @@ export default function OnlineGame() {
           <Menu label="Confirm resign" entries={resignEntries} {...resign} />
         </ScreenOverlay>
       )}
-      {overlay === 'settings' && (
-        <ScreenOverlay title="SETTINGS">
-          <Menu label="Settings" {...settings} />
-        </ScreenOverlay>
-      )}
-      {overlay === 'about' && (
-        <ScreenOverlay label="About">
-          <About {...about} />
-        </ScreenOverlay>
-      )}
-      {overlay === 'help' && (
-        <ScreenOverlay label="How to play">
-          <Rules
-            page={rules.page}
-            setPage={rules.setPage}
-            onDone={rules.done}
-          />
-        </ScreenOverlay>
-      )}
+      {menus.render(overlay)}
     </Device>
   )
 }

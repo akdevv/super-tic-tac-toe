@@ -8,14 +8,13 @@ import {
   type Player,
 } from './engine.ts'
 
-/** Local 2-player uses X/O/draw; vs bot uses you/bot/draw. */
+/** Keys: X/O/draw in 2-player, you/bot/draw vs bot. */
 export type Score = Record<string, number>
 
 export interface LocalGame {
-  /** Mark the bot plays, or null for 2-player. */
+  /** null = 2-player. */
   bot: Player | null
   first: Player
-  /** Cell indices (board * 9 + cell), in order. */
   moves: number[]
   score: Score
 }
@@ -30,7 +29,6 @@ export const stateOf = (g: LocalGame): GameState => replay(g.first, g.moves)
 
 const moverOf = (g: LocalGame, i: number) => (i % 2 ? other(g.first) : g.first)
 
-/** Undo is allowed mid-game when there's a human move to take back. */
 export function canUndo(g: LocalGame): boolean {
   return !stateOf(g).winner && g.moves.some((_, i) => moverOf(g, i) !== g.bot)
 }
@@ -40,7 +38,7 @@ export function reducer(g: LocalGame, action: Action): LocalGame {
     case 'move': {
       const s = stateOf(g)
       const board = Math.floor(action.cell / 9)
-      // Ignore illegal or stale moves (e.g. a late bot reply) instead of crashing.
+      // Stale moves (e.g. a late bot reply) are ignored.
       if (!canPlay(s, board, action.cell - board * 9)) return g
       const moves = [...g.moves, action.cell]
       const winner = replay(g.first, moves).winner
@@ -60,23 +58,17 @@ export function reducer(g: LocalGame, action: Action): LocalGame {
     }
     case 'undo': {
       if (!canUndo(g)) return g
-      // Pop back through the bot's reply to the last human move.
       const moves = g.moves.slice()
       while (moves.length && moverOf(g, moves.length - 1) === g.bot) moves.pop()
       moves.pop()
       return { ...g, moves }
     }
     case 'restart':
-      // Starter alternates each game.
       return { ...g, first: other(g.first), moves: [] }
     case 'resetScore':
       return { ...g, score: {} }
   }
 }
-
-// --- Persistence ---
-// Game: sessionStorage = one per tab, survives refresh, gone when the tab
-// closes, and expires after GAME_TTL of inactivity. Score: localStorage, per mode.
 
 type Store = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
 
@@ -95,7 +87,7 @@ function write(store: Store, key: string, value: unknown) {
   try {
     store.setItem(key, JSON.stringify(value))
   } catch {
-    // Storage full or blocked (private mode): the game still works, just unsaved.
+    // storage full or blocked: play on unsaved
   }
 }
 
@@ -108,7 +100,6 @@ export function saveGame(
   write(store, GAME_KEY, { mode, first: g.first, moves: g.moves, savedAt: now })
 }
 
-/** The saved game for this mode, or null if missing, expired, other mode, or tampered. */
 export function loadGame(
   store: Store,
   mode: string,
@@ -124,7 +115,7 @@ export function loadGame(
     try {
       store.removeItem(GAME_KEY)
     } catch {
-      // ignore
+      // storage blocked
     }
     return null
   }
@@ -132,7 +123,6 @@ export function loadGame(
   if (!Array.isArray(d.moves) || d.moves.length > 81) return null
   const first: Player = d.first
   const moves = d.moves as unknown[]
-  // Every stored move must be legal, not just "replay without crashing".
   let s = newGame(first)
   for (const m of moves) {
     if (typeof m !== 'number') return null

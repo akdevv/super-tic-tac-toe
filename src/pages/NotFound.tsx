@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router'
-import Device, { MessageScreen } from '../components/Device.tsx'
+import Device from '../device/Device.tsx'
+import { MessageScreen } from '../screen/Hud.tsx'
 
 export default function NotFound() {
   const navigate = useNavigate()
   const home = () => navigate('/')
   return (
     <Device
+      title="Not found"
       pad={{
         a: home,
         b: home,

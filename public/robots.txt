@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://super-tic-tac-toe-gamma.vercel.app/sitemap.xml
